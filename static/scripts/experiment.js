@@ -1,51 +1,114 @@
-available_strategies = [
-    "deer",
-    "roots",
-    "berries",
-    "fish",
-    "mushrooms",
-    "eggs",
-    "fruit",
-    "boar",
-    "birds",
-    "eels",
-    "clams",
-    "grubs",
-    "nuts",
-    "seeds",
-    "greens",
-    "rabbits",
-    "rats",
-    "insects",
-    "shrimp",
-    "lizards"
-];
-strategies = {
-    left: {
-        name: "none", image: "none", mean_1: "none", mean_2: "none", payoff: "none"
-    },
-    right: {
-        name: "none", image: "none", mean_1: "none", mean_2: "none", payoff: "none"
+if (!Date.now) {
+    Date.now = function() {
+        return new Date().getTime();
+    };
+}
+
+function getTrajectoryIndex(timestamp) {
+    var minIndex = 0;
+    var maxIndex = this.length - 1;
+    var currentIndex;
+    var currentElement;
+
+    while (minIndex <= maxIndex) {
+        currentIndex = (minIndex + maxIndex) / 2 | 0;
+        currentElement = this[currentIndex][2];
+
+        if (currentElement < timestamp) {
+            minIndex = currentIndex + 1;
+        }
+        else if (currentElement > timestamp) {
+            maxIndex = currentIndex - 1;
+        }
+        else {
+            return currentIndex;
+        }
     }
-};
-temperatures = [
-    "extremely cold",
-    "very cold",
-    "cold",
-    "chilly",
-    "cool",
-    "mild",
-    "warm",
-    "very warm",
-    "hot",
-    "very hot",
-    "extremely hot"
-];
-temperature = {
-    number: "none",
-    name: "none",
-    image: "none"
-};
+    return maxIndex;
+}
+
+$(function () {
+
+    refreshRate = 5;  // Hz
+    waitTime = 1000.0/refreshRate;
+
+    trajectory = [];
+    began = false;
+    completed = false;
+
+    var paper = Raphael(0, 0, 400, 400);
+    var rect = paper.rect(0, 0, 400, 400);
+    rect.attr("fill", "#eee");
+    var circle = paper.circle(200, 200, 10);
+    circle.attr('fill', '#000');
+
+    $(window).mousemove(function( event ) {
+        if (began && !completed) {
+            circle.attr({
+                cx: event.pageX,
+                cy: event.pageY
+            });
+            trajectory.push([event.pageX, event.pageY, Date.now()]);
+        }
+    });
+
+    circle.drag(
+        function () {
+            began = true;
+            $('body').css('cursor', 'none');
+        },
+        function () {
+            return;
+        },
+        function () {
+            completed = true;
+            $('body').css('cursor', 'default');
+            normalizeTimestamps(trajectory);
+        }
+    );
+
+    normalizeTimestamps = function(trajectory) {
+        start = trajectory[0][2];
+        for (var i = 0; i < trajectory.length; i++) {
+            trajectory[i][2] = trajectory[i][2] - start;
+        }
+    };
+
+    replayTrajectory = function (trajectory, condition) {
+
+        condition = condition || function () { return true; };
+
+        function refreshDisplay(trajectory) {
+
+            stamp = Date.now() - replayStart;
+            console.log(stamp);
+            console.log(trajectory);
+            idx = getTrajectoryIndex.call(trajectory, stamp);
+            console.log(idx);
+            console.log("---");
+
+            if (trajectory.length > 0) {
+
+                if (condition(trajectory)) {
+                    circle.attr({
+                        cx: trajectory[idx][0],
+                        cy: trajectory[idx][1]
+                    });
+                }
+                setTimeout(function(){
+                    refreshDisplay(trajectory);
+                }, waitTime);
+            }
+        }
+        replayStart = Date.now();
+        refreshDisplay(trajectory);
+    };
+
+    $("#replay").click( function () {
+        replayTrajectory(trajectory);
+    });
+});
+
 
 $(document).ready(function() {
     //$(".payoff-p").hide();
