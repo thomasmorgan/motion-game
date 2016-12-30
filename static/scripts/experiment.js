@@ -48,9 +48,9 @@ temperature = {
 };
 
 $(document).ready(function() {
-    $(".payoff-p").hide();
-    get_experiment_parameters();
-    create_agent();
+    //$(".payoff-p").hide();
+    //get_experiment_parameters();
+    //create_agent();
 });
 
 get_experiment_parameters = function () {
