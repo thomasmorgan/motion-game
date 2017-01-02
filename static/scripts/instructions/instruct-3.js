@@ -12,18 +12,27 @@ $(document).ready(function() {
         go_to_page("instructions/instruct-2");
     });
     $(".true-button").click(function() {
-        $(".true-button").prop("disabled",true);
-        $(".section-button").prop("disabled",true);
-        $(".stutter-button").prop("disabled",true);
+        disable_buttons();
         replay_motion();
-        setTimeout(
-            function() {
-                $(".true-button").prop("disabled",false);
-                $(".section-button").prop("disabled",false);
-                $(".stutter-button").prop("disabled",false);
-            },
-        5000);
+    });
+
+    $(".section-button").click(function() {
+        disable_buttons();
+        replay_partial_motion(random_sections(5));
     });
 
     add_canvas();
 });
+
+disable_buttons = function() {
+    $(".true-button").prop("disabled",true);
+    $(".section-button").prop("disabled",true);
+    $(".stutter-button").prop("disabled",true);
+    setTimeout(
+        function() {
+            $(".true-button").prop("disabled",false);
+            $(".section-button").prop("disabled",false);
+            $(".stutter-button").prop("disabled",false);
+        },
+    5000);
+};

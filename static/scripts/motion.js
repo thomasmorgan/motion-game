@@ -28,6 +28,36 @@ replay_motion = function() {
     draw_next_dot();
 };
 
+replay_partial_motion = function(sections) {
+    if ($.inArray(1, sections) > -1) {
+        rect.attr("fill", "#eee");
+    } else {
+        rect.attr("fill", "#000");
+    }
+    for (i=2; i<11; i++) {
+        if ($.inArray(i, sections) > -1) {
+            setTimeout(
+                function() {
+                    rect.attr("fill", "#eee");
+                },
+            (i-1)*500);
+        } else {
+            setTimeout(
+                function() {
+                    rect.attr("fill", "#000");
+                },
+            (i-1)*500);
+        }
+    }
+    setTimeout(
+        function() {
+            circle.attr("fill", "#eee");
+            rect.attr("fill", "#eee");
+        },
+    5000);
+    replay_motion();
+};
+
 time_now = function() {
     return new Date().getTime();
 };
@@ -80,4 +110,16 @@ enable_drawing = function() {
         }
 
     });
+};
+
+random_sections = function(size) {
+    arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    var shuffled = arr.slice(0), i = arr.length, temp, index;
+    while (i--) {
+        index = Math.floor((i + 1) * Math.random());
+        temp = shuffled[index];
+        shuffled[index] = shuffled[i];
+        shuffled[i] = temp;
+    }
+    return shuffled.slice(0, size);
 };
