@@ -21,6 +21,11 @@ $(document).ready(function() {
         replay_partial_motion(random_sections(5));
     });
 
+    $(".stutter-button").click(function() {
+        disable_buttons();
+        replay_motion(Math.floor(Math.random()*500)+1);
+    });
+
     add_canvas();
 });
 

@@ -1,4 +1,5 @@
-replay_motion = function() {
+replay_motion = function(period) {
+    period = typeof period !== 'undefined' ? period : 0;
     circle = paper.circle(xs[0], ys[0], 10);
     circle.attr('fill', '#000');
     start_time = time_now();
@@ -11,7 +12,7 @@ replay_motion = function() {
                     cy: ys[index]
                 });
                 if (index + 1 < xs.length) {
-                    if (time_now() - start_time > ts[index + 1]) {
+                    while (time_now() - start_time > ts[index + 1]) {
                         index = index + 1;
                     }
                     draw_next_dot();
@@ -22,7 +23,7 @@ replay_motion = function() {
                         circle.remove();
                     }
                 }
-            }, 0
+            }, period
         );
     };
     draw_next_dot();
