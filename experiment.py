@@ -20,10 +20,9 @@ class MotionGame(Experiment):
         super(MotionGame, self).__init__(session)
         self.task = "The Motion Game"
         self.verbose = False
-        self.experiment_repeats = 1
+        self.experiment_repeats = 10
 
         self.initial_recruitment_size = config.generation_size
-
         self.trials = config.trials
 
         if not self.networks():
