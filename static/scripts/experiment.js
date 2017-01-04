@@ -28,7 +28,7 @@ create_agent = function() {
         type: 'json',
         success: function (resp) {
             my_node_id = resp.node.id;
-            //get_genes();
+            get_infos();
         },
         error: function (err) {
             allow_exit();
@@ -38,29 +38,52 @@ create_agent = function() {
 };
 
 // what is my memory and curiosity?
-get_genes = function() {
+get_infos = function() {
     reqwest({
         url: "/node/" + my_node_id + "/infos",
         method: 'get',
         type: 'json',
-        data: {
-            info_type: "Gene"
-        },
         success: function (resp) {
             infos = resp.infos;
             for (i = 0; i < infos.length; i++) {
                 info = infos[i];
-                if (info.type == "learning_gene") {
-                    learning_capacity = parseInt(info.contents, 10);
-                } else {
-                    memory_capacity = parseInt(info.contents, 10);
-                    rounds_to_change = [2, 3, 4, 5, 6, 7, 8, 9, 10];
-                    for (j=0; j<Math.min(memory_capacity, 9); j++) {
-                        rounds_to_change.splice(Math.floor(Math.random()*rounds_to_change.length), 1);
-                    }
+                if (info.type == "asocial_gene") {
+                    asocial_capacity = parseInt(info.contents, 10);
+                } else if (info.type == "social_gene") {
+                    social_capacity = parseInt(info.contents, 10);
                 }
             }
-            start_first_round();
+            get_received_infos();
+        },
+        error: function (err) {
+            create_agent();
+        }
+    });
+};
+
+// what is my memory and curiosity?
+get_received_infos = function() {
+    reqwest({
+        url: "/node/" + my_node_id + "/received_infos",
+        method: 'get',
+        type: 'json',
+        success: function (resp) {
+            received_infos = resp.infos;
+            for (i = 0; i < received_infos.length; i++) {
+                info = received_infos[i];
+                if (info.type == "true_motion") {
+                    j = JSON.parse(info.contents);
+                    true_xs = j["xs"];
+                    true_ys = j["ys"];
+                    true_ts = j["ts"];
+                } else if (info.type == "motion") {
+                    j = JSON.parse(info.contents);
+                    xs = j["xs"];
+                    ys = j["ys"];
+                    ts = j["ts"];
+
+                }
+            }
         },
         error: function (err) {
             create_agent();
