@@ -1,30 +1,17 @@
 $(document).ready(function() {
-    //$(".payoff-p").hide();
-    //get_experiment_parameters();
-    //create_agent();
+    add_canvas();
+    get_experiment_parameters();
+    create_agent();
 });
 
 get_experiment_parameters = function () {
     reqwest({
-        url: "/experiment/trials_per_round",
+        url: "/experiment/trials",
         method: 'get',
         type: 'json',
         success: function (resp) {
-            trials_per_round = resp.trials_per_round;
-            $(".trials_per_round").html(trials_per_round);
-        },
-        error: function (err) {
-            console.log(err);
-            create_agent();
-        }
-    });
-    reqwest({
-        url: "/experiment/rounds",
-        method: 'get',
-        type: 'json',
-        success: function (resp) {
-            rounds = resp.rounds;
-            $(".rounds").html(rounds);
+            trials = resp.trials;
+            $(".trials").html(trials);
         },
         error: function (err) {
             console.log(err);
@@ -41,7 +28,7 @@ create_agent = function() {
         type: 'json',
         success: function (resp) {
             my_node_id = resp.node.id;
-            get_genes();
+            //get_genes();
         },
         error: function (err) {
             allow_exit();

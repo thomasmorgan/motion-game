@@ -25,6 +25,8 @@ class MotionGame(Experiment):
 
         self.initial_recruitment_size = config.generation_size
 
+        self.trials = config.trials
+
         if not self.networks():
             self.setup()
         self.save()

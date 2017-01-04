@@ -73,43 +73,36 @@ enable_drawing = function() {
     x_offset = $(".canvas-div").position().left;
     y_offset = $(".canvas-div").position().top;
 
-    ready = true;
-
     $(".canvas-div").click(function(click_location) {
-        if (ready === true) {
-            ready = false;
-            xs = [];
-            ys = [];
-            ts = [];
-            circle = paper.circle(click_location.pageX - x_offset, click_location.pageY - y_offset, 10);
-            circle.attr('fill', '#000');
-            start_time = time_now();
-            xs.push(click_location.pageX - x_offset);
-            ys.push(click_location.pageY - y_offset);
-            ts.push(0);
+        xs = [];
+        ys = [];
+        ts = [];
+        circle = paper.circle(click_location.pageX - x_offset, click_location.pageY - y_offset, 10);
+        circle.attr('fill', '#000');
+        start_time = time_now();
+        xs.push(click_location.pageX - x_offset);
+        ys.push(click_location.pageY - y_offset);
+        ts.push(0);
 
-            $(".canvas-div").mousemove(function( event ) {
-                x_cor = event.pageX - x_offset;
-                y_cor = event.pageY - y_offset;
-                circle.attr({
-                    cx: x_cor,
-                    cy: y_cor
-                });
-                xs.push(x_cor);
-                ys.push(y_cor);
-                ts.push(time_now() - start_time);
+        $(".canvas-div").mousemove(function( event ) {
+            x_cor = event.pageX - x_offset;
+            y_cor = event.pageY - y_offset;
+            circle.attr({
+                cx: x_cor,
+                cy: y_cor
             });
+            xs.push(x_cor);
+            ys.push(y_cor);
+            ts.push(time_now() - start_time);
+        });
 
-            setTimeout(
-                function() {
-                    $(".canvas-div").off('mousemove');
-                    circle.remove();
-                    ready = true;
-                },
-                5000
-            );
-        }
-
+        setTimeout(
+            function() {
+                $(".canvas-div").off('mousemove');
+                circle.remove();
+            },
+            5000
+        );
     });
 };
 
