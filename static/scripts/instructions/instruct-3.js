@@ -23,7 +23,7 @@ $(document).ready(function() {
 
     $(".stutter-button").click(function() {
         disable_buttons();
-        replay_motion(Math.floor(Math.random()*500)+1);
+        replay_motion(Math.floor(Math.random()*500)+200);
     });
 
     add_canvas();

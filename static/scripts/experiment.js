@@ -1,7 +1,22 @@
+var social_xs;
+var social_ys;
+var social_ts;
+
 $(document).ready(function() {
     add_canvas();
     get_experiment_parameters();
     create_agent();
+    handle_true_motion = false;
+    handle_social_information = false;
+    $(document).keypress(function(event) {
+        if (event.which == 13) {
+            if (handle_true_motion === true) {
+                
+            } else if (handle_social_information === true) {
+                replay_motion(social_capacity);
+            }
+        }
+    });
 });
 
 get_experiment_parameters = function () {
@@ -14,7 +29,6 @@ get_experiment_parameters = function () {
             $(".trials").html(trials);
         },
         error: function (err) {
-            console.log(err);
             create_agent();
         }
     });
@@ -78,12 +92,13 @@ get_received_infos = function() {
                     true_ts = j["ts"];
                 } else if (info.type == "motion") {
                     j = JSON.parse(info.contents);
-                    xs = j["xs"];
-                    ys = j["ys"];
-                    ts = j["ts"];
+                    social_xs = j["xs"];
+                    social_ys = j["ys"];
+                    social_ts = j["ts"];
 
                 }
             }
+            show_asocial_information();
         },
         error: function (err) {
             create_agent();
@@ -91,88 +106,57 @@ get_received_infos = function() {
     });
 };
 
-start_first_round = function() {
-    total_payoff = 0;
-    round = 1;
-    trial = 1;
-    update_trial_text();
-    pick_temperature();
-    change_left_strategy();
-    change_right_strategy();
-    calculate_strategy_payoffs();
-    update_ui();
-    create_event_listeners();
+show_asocial_information = function() {
+    $(".title").html("Watch the motion of the dot and then reproduce it.");
+    $(".instructions").html("Press ENTER to see a section of the true motion.");
+    $(document).keypress(function(event) {
+        if (event.which == 13) {
+            $(document).off('keypress');
+            $(".instructions").html("Now playing a section of the true motion.");
+            xs = true_xs;
+            ys = true_ys;
+            ts = true_ts;
+            replay_partial_motion(random_sections(asocial_capacity));
+
+            setTimeout(
+                function() {
+                    if (social_xs !== undefined) {
+                        show_social_information();
+                    } else {
+                        request_input();
+                    }
+                }, 5500
+            );
+        }
+    });
 };
 
-update_trial_text = function() {
-    $(".round").html(round);
-    $(".trial").html(trial);
+show_social_information = function() {
+    $(".instructions").html("Press ENTER to see the previous participant's input.");
+    $(document).keypress(function(event) {
+        if (event.which == 13) {
+            $(document).off('keypress');
+            $(".instructions").html("Now playing the previous participant's input.");
+            xs = social_xs;
+            ys = social_ys;
+            ts = social_ts;
+            replay_motion(social_capacity);
+
+            setTimeout(
+                function() {
+                    request_input();
+                }, 5500
+            );
+        }
+    });
 };
 
-change_left_strategy = function() {
-    index = Math.floor(Math.random()*available_strategies.length);
-    strategies.left.name = available_strategies[index];
-    available_strategies.splice(index, 1);
-    strategies.left.image = "static/images/" + strategies.left.name + ".png";
-    strategies.left.mean_1 = Math.random();
-    strategies.left.mean_2 = Math.random();
-    
+request_input = function() {
+    $(".instructions").html("Click on the canvas and move your cursor to recreate the motion of the dot.");
+    enable_drawing();
 };
 
-change_right_strategy = function() {
-    index = Math.floor(Math.random()*available_strategies.length);
-    strategies.right.name = available_strategies[index];
-    available_strategies.splice(index, 1);
-    strategies.right.image = "static/images/" + strategies.right.name + ".png";
-    strategies.right.mean_1 = Math.random();
-    strategies.right.mean_2 = Math.random();
-    
-};
 
-calculate_strategy_payoffs = function() {
-    strategies.left.payoff = Math.round(
-        scaled_normal_pdf(temperature.number/10.0, strategies.left.mean_1, 0.01) +
-        scaled_normal_pdf(temperature.number/10.0, strategies.left.mean_2, 0.04)
-    );
-    strategies.right.payoff = Math.round(
-        scaled_normal_pdf(temperature.number/10.0, strategies.right.mean_1, 0.01) +
-        scaled_normal_pdf(temperature.number/10.0, strategies.right.mean_2, 0.04)
-    );
-};
-
-update_ui = function() {
-    $(".left-td").html("<img class='left-img' src=" + strategies.left.image + "></img>");
-    $(".right-td").html("<img class='right-img' src=" + strategies.right.image + "></img>");
-    $(".thermometer-div").html("<img src=" + temperature.image + "></img>");
-    $(".temp-description").html(temperature.name);
-
-    if (trial <= learning_capacity) {
-        $(".trial-instruct").html("You can choose one of the options and earn its payoff,<br>or you can check both options to see their payoffs without earning anything.");
-        $(".trial-instruct-lower").html("Click on the images to choose an option, or click the 'check' button to check both strategies without earning a payoff.");
-    } else {
-        $(".trial-instruct").html("You must choose one of the options and earn its payoff,<br>you cannot check both options on this trial.");
-        $(".trial-instruct-lower").html("Click on the images to choose an option.");
-    }
-};
-
-pick_temperature = function() {
-    num = Math.floor(Math.random()*11);
-    temperature.number = num;
-    temperature.name = temperatures[num];
-    temperature.image = "static/images/" + temperature.number + ".png";
-};
-
-normal_pdf = function(x, u, v) {
-    exponent = -(Math.pow((x-u),2)/(2*v));
-    denominator = Math.pow((2*v*Math.PI), 0.5);
-    return (1/denominator)*Math.exp(exponent);
-};
-
-scaled_normal_pdf = function(x, u, v) {
-    density = normal_pdf(x, u, v);
-    max_density = normal_pdf(u, u, v);
-    return (density/max_density)*10;
-};
 
 create_event_listeners = function() {
     $(".left-img").on('click', function() {

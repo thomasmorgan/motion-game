@@ -8,5 +8,5 @@ $(document).ready(function() {
         go_to_page("instructions/instruct-1");
     });
     add_canvas();
-    enable_drawing();
+    enable_drawing(repeat=true);
 });

@@ -69,11 +69,13 @@ add_canvas = function() {
     rect.attr("fill", "#eee");
 };
 
-enable_drawing = function() {
-    x_offset = $(".canvas-div").position().left;
-    y_offset = $(".canvas-div").position().top;
+enable_drawing = function(repeat) {
+    if (repeat === undefined) { repeat = false; }
+    x_offset = $(paper.canvas).offset().left;
+    y_offset = $(paper.canvas).offset().top;
 
     $(".canvas-div").click(function(click_location) {
+        $(".canvas-div").off('click');
         xs = [];
         ys = [];
         ts = [];
@@ -100,6 +102,9 @@ enable_drawing = function() {
             function() {
                 $(".canvas-div").off('mousemove');
                 circle.remove();
+                if (repeat === true) {
+                    enable_drawing(true);
+                }
             },
             5000
         );
