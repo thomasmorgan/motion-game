@@ -21,6 +21,7 @@ class MotionGame(Experiment):
         self.task = "The Motion Game"
         self.verbose = False
         self.experiment_repeats = 10
+        self.known_classes["Motion"] = Motion
 
         self.initial_recruitment_size = config.generation_size
         self.trials = config.trials

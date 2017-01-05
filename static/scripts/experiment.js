@@ -1,6 +1,7 @@
 var social_xs;
 var social_ys;
 var social_ts;
+var trial = 0;
 
 $(document).ready(function() {
     add_canvas();
@@ -43,6 +44,8 @@ create_agent = function() {
         success: function (resp) {
             my_node_id = resp.node.id;
             get_infos();
+            trial++;
+            $(".trial").html(trial);
         },
         error: function (err) {
             allow_exit();
@@ -156,110 +159,40 @@ request_input = function() {
     enable_drawing();
 };
 
-
-
-create_event_listeners = function() {
-    $(".left-img").on('click', function() {
-        remove_event_listeners();
-        show_payoff("left");
-        log_decision("left");
-        setTimeout(function(){ advance_to_next_trial(); }, 2000);
-    });
-    $(".right-img").on('click', function() {
-        remove_event_listeners();
-        show_payoff("right");
-        log_decision("right");
-        setTimeout(function(){ advance_to_next_trial(); }, 2000);
-    });
-    if (trial <= learning_capacity) {
-        $('.check-button').show();
-        $(".check-button").on('click', function() {
-            remove_event_listeners();
-            show_payoff("both");
-            log_decision("check");
-            setTimeout(function(){ advance_to_next_trial(); }, 2000);
-        });
-    } else {
-        $('.check-button').hide();
-    }
+drawing_complete = function() {
+    save_input();
+    create_agent();
 };
 
-log_decision = function(decision) {
-    if (decision == "left") {
-        payoff = strategies.left.payoff;
-    } else if (decision == "right") {
-        payoff = strategies.right.payoff;
-    } else {
-        payoff = 0;
-    }
-    total_payoff = total_payoff + payoff;
-    update_payoff_text();
+save_input = function() {
+    input = {
+        xs: xs,
+        ys: ys,
+        ts: ts
+    };
+    input = JSON.stringify(input);
+
     dat = {
-        temperature: temperature,
-        strategies: strategies,
-        trial: trial,
-        round: round,
-        payoff: payoff
+        true_xs: true_xs,
+        true_ys: true_ys,
+        true_ts: true_ts,
+        social_xs: social_xs,
+        social_ys: social_ys,
+        social_ts: social_ts,
+        trial: trial
     };
     dat = JSON.stringify(dat);
+
     reqwest({
         url: "/info/" + my_node_id,
         method: 'post',
         data: {
-            contents: decision,
+            contents: input,
             property1: dat,
-            info_type: 'Decision'
+            info_type: 'Motion'
         },
         error: function (err) {
             create_agent();
         }
     });
-};
-
-update_payoff_text = function() {
-    $(".payoff-text").html(total_payoff);
-};
-
-remove_event_listeners = function () {
-    $(".left-img").off('click');
-    $(".right-img").off('click');
-    $(".check-button").off('click');
-};
-
-show_payoff = function(which) {
-    if (which == "both") {
-        $(".left-td").html(strategies.left.payoff);
-        $(".right-td").html(strategies.right.payoff);
-    }
-    else if (which == "left") {
-        $(".left-td").html("X");
-        $(".right-td").html("");
-    }
-    else if (which == "right") {
-        $(".right-td").html("X");
-        $(".left-td").html("");
-    }
-};
-
-advance_to_next_trial = function() {
-    trial += 1;
-    if (trial > trials_per_round) {
-        round += 1;
-        if (round > rounds) {
-            create_agent();
-        } else {
-            trial = 1;
-            if(jQuery.inArray(round, rounds_to_change) !== -1) {
-                change_left_strategy();
-                change_right_strategy();
-            }
-        }
-    }
-    if (round <= rounds) {
-        update_trial_text();
-        pick_temperature();
-        calculate_strategy_payoffs();
-        update_ui();
-        create_event_listeners();
-    }
 };

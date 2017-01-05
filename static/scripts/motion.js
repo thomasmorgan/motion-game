@@ -102,6 +102,7 @@ enable_drawing = function(repeat) {
             function() {
                 $(".canvas-div").off('mousemove');
                 circle.remove();
+                drawing_complete();
                 if (repeat === true) {
                     enable_drawing(true);
                 }
@@ -109,6 +110,9 @@ enable_drawing = function(repeat) {
             5000
         );
     });
+};
+
+drawing_complete = function() {
 };
 
 random_sections = function(size) {
