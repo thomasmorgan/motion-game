@@ -94,7 +94,9 @@ class MotionGame(Experiment):
 
     def bonus(self, participant):
 
-        return 0.0
+        total_error = sum([n.error for n in participant.nodes()])
+
+        return max(round(1.0 - float(total_error)/1000.0, 2), 0.00)
 
 
 class MotionGenerational(DiscreteGenerational):
