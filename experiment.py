@@ -55,6 +55,9 @@ class MotionGame(Experiment):
             self.log("generation finished, recruiting another")
             self.recruiter().recruit_participants(n=config.generation_size)
 
+    def info_post_request(self, node, info):
+        node.calculate_fitness()
+
     def data_check(self, participant):
 
         return True
@@ -218,11 +221,56 @@ class MotionAgent(Agent):
     def generation(self):
         return cast(self.property2, Integer)
 
-    def calculate_payoff(self):
-        pass
+    @hybrid_property
+    def error(self):
+        return int(self.property3)
+
+    @error.setter
+    def error(self, error):
+        self.property3 = repr(error)
+
+    @error.expression
+    def error(self):
+        return cast(self.property3, Integer)
 
     def calculate_fitness(self):
-        pass
+        motion = self.infos(type=Motion)[0]
+        contents = json.loads(motion.contents)
+
+        xs = contents["xs"]
+        ys = contents["ys"]
+        ts = contents["ts"]
+
+        dat = json.loads(motion.property1)
+
+        true_xs = dat["true_xs"]
+        true_ys = dat["true_ys"]
+        true_ts = dat["true_ts"]
+
+        total_error = 0
+        points = 0
+
+        for i in range(0, 5001, 100):
+            try:
+                ii = next(t[0] for t in enumerate(ts) if t[1] > i) - 1
+            except:
+                ii = -1
+            x = xs[ii]
+            y = ys[ii]
+
+            try:
+                ii = next(t[0] for t in enumerate(true_ts) if t[1] > i) - 1
+            except:
+                ii = -1
+            true_x = true_xs[ii]
+            true_y = true_ys[ii]
+
+            error = int(pow(float(pow((x-true_x), 2) + pow((y-true_y), 2)), 0.5))
+            total_error += error
+            points += max(100-error, 0)
+
+        self.error = total_error
+        self.fitness = pow(points, 2)
 
     def _what(self):
         return Info
