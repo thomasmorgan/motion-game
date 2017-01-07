@@ -60,7 +60,37 @@ class MotionGame(Experiment):
 
     def data_check(self, participant):
 
-        return True
+        try:
+            # check number of nodes
+            nodes = participant.nodes()
+            assert len(nodes) == self.trials
+
+            for node in nodes:
+                # check all nodes have an error and a fitness
+                assert isinstance(node.error, int)
+                assert isinstance(node.fitness, int)
+
+                infos = node.infos()
+
+                # check number of motions
+                assert len([i for i in infos if isinstance(i, Motion)]) == 1
+
+                # check numbers of genes
+                assert len([i for i in infos if isinstance(i, Gene)]) == 2
+                assert len([i for i in infos if isinstance(i, SocialGene)]) == 1
+                assert len([i for i in infos if isinstance(i, AsocialGene)]) == 1
+
+                # check numbers of received infos
+                received_infos = node.received_infos()
+                assert len([i for i in received_infos if isinstance(i, TrueMotion)]) == 1
+                if node.generation == 0:
+                    assert len([i for i in received_infos if isinstance(i, Motion)]) == 1
+                else:
+                    assert len([i for i in received_infos if isinstance(i, Motion)]) == 2
+
+            return True
+        except:
+            return False
 
     def bonus(self, participant):
 
