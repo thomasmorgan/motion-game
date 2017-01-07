@@ -7,4 +7,14 @@ $(document).ready(function() {
         allow_exit();
         go_to_page("instructions/instruct-3");
     });
+
+    reqwest({
+        url: "/experiment/trials",
+        method: 'get',
+        type: 'json',
+        success: function (resp) {
+            trials = resp.trials;
+            $(".trials").html(trials);
+        }
+    });
 });
