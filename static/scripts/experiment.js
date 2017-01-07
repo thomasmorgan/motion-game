@@ -143,7 +143,8 @@ show_social_information = function() {
             xs = social_xs;
             ys = social_ys;
             ts = social_ts;
-            replay_motion(social_capacity);
+            period = 5000/(social_capacity + 1);
+            replay_motion(period);
 
             setTimeout(
                 function() {
