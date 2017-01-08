@@ -39,12 +39,12 @@ replay_partial_motion = function(sections) {
     for (i=2; i<11; i++) {
         if ($.inArray(i, sections) > -1) {
             setTimeout(
-                paint_canvas_grey(),
+                paint_canvas_grey,
                 (i-1)*500
             );
         } else {
             setTimeout(
-                paint_canvas_black(),
+                paint_canvas_black,
                 (i-1)*500
             );
         }
