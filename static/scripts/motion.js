@@ -23,7 +23,8 @@ replay_motion = function(period) {
                         circle.remove();
                     }
                 }
-            }, period
+            },
+            period
         );
     };
     draw_next_dot();
@@ -31,31 +32,30 @@ replay_motion = function(period) {
 
 replay_partial_motion = function(sections) {
     if ($.inArray(1, sections) > -1) {
-        rect.attr("fill", "#eee");
+        paint_canvas_grey();
     } else {
-        rect.attr("fill", "#000");
+        paint_canvas_black();
     }
     for (i=2; i<11; i++) {
         if ($.inArray(i, sections) > -1) {
             setTimeout(
-                function() {
-                    rect.attr("fill", "#eee");
-                },
-            (i-1)*500);
+                paint_canvas_grey(),
+                (i-1)*500
+            );
         } else {
             setTimeout(
-                function() {
-                    rect.attr("fill", "#000");
-                },
-            (i-1)*500);
+                paint_canvas_black(),
+                (i-1)*500
+            );
         }
     }
     setTimeout(
         function() {
             circle.attr("fill", "#eee");
-            rect.attr("fill", "#eee");
+            paint_canvas_grey();
         },
-    5000);
+        5000
+    );
     replay_motion();
 };
 
@@ -66,7 +66,15 @@ time_now = function() {
 add_canvas = function() {
     paper = new Raphael($(".canvas-div").get(0), 400, 400);
     rect = paper.rect(0, 0, 400, 400);
+    paint_canvas_grey();
+};
+
+paint_canvas_grey = function() {
     rect.attr("fill", "#eee");
+};
+
+paint_canvas_black = function() {
+    rect.attr("fill", "#000");
 };
 
 enable_drawing = function(repeat) {
