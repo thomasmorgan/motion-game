@@ -84,6 +84,7 @@ enable_drawing = function(repeat) {
 
     $(".canvas-div").click(function(click_location) {
         $(".canvas-div").off('click');
+        $('.canvas-div').css('cursor', 'none');
         xs = [];
         ys = [];
         ts = [];
@@ -109,6 +110,7 @@ enable_drawing = function(repeat) {
         setTimeout(
             function() {
                 $(".canvas-div").off('mousemove');
+                $('.canvas-div').css('cursor', 'auto');
                 circle.remove();
                 drawing_complete();
                 if (repeat === true) {
