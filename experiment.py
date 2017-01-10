@@ -90,13 +90,15 @@ class MotionGame(Experiment):
 
             return True
         except:
+            import traceback
+            traceback.print_exc()
             return False
 
     def bonus(self, participant):
 
         total_error = sum([n.error for n in participant.nodes()])
 
-        return max(round(1.0 - float(total_error)/1000.0, 2), 0.00)
+        return max(round(1.0 - float(total_error)/10000.0, 2), 0.00)
 
 
 class MotionGenerational(DiscreteGenerational):
