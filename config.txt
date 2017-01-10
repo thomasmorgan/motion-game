@@ -1,19 +1,19 @@
 [Experiment Configuration]
 mode = deploy
 auto_recruit = true
-generation_size = 40
-generations = 40
+generation_size = 1
+generations = 5
 trials = 10
 social_cost = 10
 asocial_cost = 0
 allow_social = true
 allow_asocial = true
-seed_social = 2
-seed_asocial = 2
+seed_social = 4
+seed_asocial = 4
 
 [HIT Configuration]
-title = Food collecting 2
-description = Collect different types of food to earn points.
+title = Dot game
+description = Reproduce the movement of a dot.
 amt_keywords = Psychology, memory
 base_payment = 1.00
 lifetime = 24
@@ -34,11 +34,11 @@ database_size = standard-2
 
 [Server Parameters]
 dyno_type = performance-m
-num_dynos_web = 3
+num_dynos_web = 1
 num_dynos_worker = 1
 host = 0.0.0.0
 notification_url = None
-clock_on = true
+clock_on = false
 logfile = -
 
 [Shell Parameters]
