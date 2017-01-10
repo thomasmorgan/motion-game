@@ -12,7 +12,7 @@ seed_social = 4
 seed_asocial = 4
 
 [HIT Configuration]
-title = Dot game
+title = Move the dot
 description = Reproduce the movement of a dot.
 amt_keywords = Psychology, memory
 base_payment = 1.00
