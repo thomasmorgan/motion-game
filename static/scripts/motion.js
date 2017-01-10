@@ -82,9 +82,9 @@ enable_drawing = function(repeat) {
     x_offset = $(paper.canvas).offset().left;
     y_offset = $(paper.canvas).offset().top;
 
-    $(".canvas-div").click(function(click_location) {
-        $(".canvas-div").off('click');
-        $('.canvas-div').css('cursor', 'none');
+    $(paper.canvas).click(function(click_location) {
+        $(paper.canvas).off('click');
+        $(paper.canvas).css('cursor', 'none');
         xs = [];
         ys = [];
         ts = [];
@@ -95,7 +95,7 @@ enable_drawing = function(repeat) {
         ys.push(click_location.pageY - y_offset);
         ts.push(0);
 
-        $(".canvas-div").mousemove(function( event ) {
+        $(paper.canvas).mousemove(function( event ) {
             x_cor = event.pageX - x_offset;
             y_cor = event.pageY - y_offset;
             circle.attr({
@@ -109,8 +109,8 @@ enable_drawing = function(repeat) {
 
         setTimeout(
             function() {
-                $(".canvas-div").off('mousemove');
-                $('.canvas-div').css('cursor', 'auto');
+                $(paper.canvas).off('mousemove');
+                $(paper.canvas).css('cursor', 'auto');
                 circle.remove();
                 drawing_complete();
                 if (repeat === true) {
