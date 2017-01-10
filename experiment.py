@@ -68,7 +68,7 @@ class MotionGame(Experiment):
             for node in nodes:
                 # check all nodes have an error and a fitness
                 assert isinstance(node.error, int)
-                assert isinstance(node.fitness, int)
+                assert isinstance(node.fitness, float)
 
                 infos = node.infos()
 
