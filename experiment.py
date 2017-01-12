@@ -168,7 +168,7 @@ class SocialGene(Gene):
 
     def _mutated_contents(self):
         if config.allow_social:
-            if random.random() < 0.1:
+            if random.random() < 0.5:
                 return max([int(self.contents) + random.sample([-1, 1], 1)[0], 1])
             else:
                 return self.contents
