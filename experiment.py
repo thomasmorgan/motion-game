@@ -98,7 +98,7 @@ class MotionGame(Experiment):
 
         total_error = sum([n.error for n in participant.nodes()])
 
-        return max(round(1.0 - float(total_error)/10000.0, 2), 0.00)
+        return max(round(1.0 - float(total_error)/(10000.0*config.trials), 2), 0.00)
 
 
 class MotionGenerational(DiscreteGenerational):
