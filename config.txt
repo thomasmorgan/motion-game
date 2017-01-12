@@ -1,15 +1,15 @@
 [Experiment Configuration]
-mode = sandbox
+mode = deploy
 auto_recruit = true
-generation_size = 2
-generations = 3
+generation_size = 10
+generations = 6
 trials = 10
 social_cost = 10
 asocial_cost = 0
 allow_social = true
 allow_asocial = true
-seed_social = 4
-seed_asocial = 4
+seed_social = 3
+seed_asocial = 5
 
 [HIT Configuration]
 title = Move the dot
@@ -34,7 +34,7 @@ database_size = standard-2
 
 [Server Parameters]
 dyno_type = performance-m
-num_dynos_web = 1
+num_dynos_web = 2
 num_dynos_worker = 1
 host = 0.0.0.0
 notification_url = None
@@ -42,5 +42,5 @@ clock_on = true
 logfile = -
 
 [Shell Parameters]
-launch_in_sandbox_mode = true
+launch_in_sandbox_mode = false
 
