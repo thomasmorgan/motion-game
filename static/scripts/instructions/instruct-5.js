@@ -5,7 +5,7 @@ $(document).ready(function() {
     });
     $("#prev-button").click(function() {
         allow_exit();
-        go_to_page("instructions/instruct-3");
+        go_to_page("instructions/instruct-4b");
     });
 
     reqwest({
