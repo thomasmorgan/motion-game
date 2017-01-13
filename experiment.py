@@ -105,6 +105,13 @@ class MotionGenerational(DiscreteGenerational):
 
     __mapper_args__ = {"polymorphic_identity": "motion_generational"}
 
+    def __init__(self, generations, generation_size, initial_source):
+        """Endow the network with some persistent properties."""
+        self.property1 = repr(generations)
+        self.property2 = repr(generation_size)
+        self.property3 = repr(initial_source)
+        self.max_size = repr(generations * generation_size + 2)
+
     def add_node(self, node):
         super(MotionGenerational, self).add_node(node=node)
         source = self.nodes(type=MotionSource)[0]
