@@ -107,9 +107,11 @@ class MotionGenerational(DiscreteGenerational):
 
     def __init__(self, generations, generation_size, initial_source):
         """Endow the network with some persistent properties."""
-        self.property1 = repr(generations)
-        self.property2 = repr(generation_size)
-        self.property3 = repr(initial_source)
+        super(MotionGenerational, self).__init__(
+            generations=generations,
+            generation_size=generation_size,
+            initial_source=initial_source
+        )
         self.max_size = repr(generations * generation_size + 2)
 
     def add_node(self, node):
