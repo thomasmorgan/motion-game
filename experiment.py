@@ -31,6 +31,8 @@ class MotionGame(Experiment):
         self.save()
 
     def setup(self):
+        """ Create the networks. """
+        # each network has 2 sources, one for genes, one for the motion
         super(MotionGame, self).setup()
         for net in self.networks():
             source = GeneticSource(network=net)
@@ -56,10 +58,11 @@ class MotionGame(Experiment):
             self.recruiter().recruit_participants(n=config.generation_size)
 
     def info_post_request(self, node, info):
+        """Whenever a info is submitted, calculate the fitness of the node."""
         node.calculate_fitness()
 
     def data_check(self, participant):
-
+        """Check participants data is ok."""
         try:
             # check number of nodes
             nodes = participant.nodes()
@@ -90,14 +93,16 @@ class MotionGame(Experiment):
 
             return True
         except:
+            # If any of the checks fail, print the error and return False.
             import traceback
             traceback.print_exc()
             return False
 
     def bonus(self, participant):
+        """Calculate the bonus payment for participants."""
 
+        # bonus is 1 - total_inaccuracy/10000_per_trial
         total_error = sum([n.error for n in participant.nodes()])
-
         return max(round(1.0 - float(total_error)/(10000.0*config.trials), 2), 0.00)
 
 
@@ -107,6 +112,9 @@ class MotionGenerational(DiscreteGenerational):
 
     def __init__(self, generations, generation_size, initial_source):
         """Endow the network with some persistent properties."""
+
+        # Follows the super, except max_size is calculated differently
+        # because motion_generation networks have 2 sources, not 1.
         super(MotionGenerational, self).__init__(
             generations=generations,
             generation_size=generation_size,
@@ -115,6 +123,11 @@ class MotionGenerational(DiscreteGenerational):
         self.max_size = repr(generations * generation_size + 2)
 
     def add_node(self, node):
+        """Add a node to the network."""
+
+        #The super handles the flow of genes and social information,
+        #in addition the extra code sends participants the true motion.
+
         super(MotionGenerational, self).add_node(node=node)
         source = self.nodes(type=MotionSource)[0]
         source.connect(node)
@@ -128,9 +141,11 @@ class MotionSource(Source):
     __mapper_args__ = {"polymorphic_identity": "motion_source"}
 
     def _what(self):
+        """Send a true motion."""
         return TrueMotion
 
     def create_infos(self):
+        """The motion used is defined by the network id."""
         from motions import motions
         TrueMotion(origin=self, contents=json.dumps(motions[self.network_id - 1]))
 
@@ -141,9 +156,11 @@ class GeneticSource(Source):
     __mapper_args__ = {"polymorphic_identity": "genetic_source"}
 
     def _what(self):
+        """Send all infos (only genes available)."""
         return Info
 
     def create_infos(self):
+        """Create initial genes, values drawn from config file."""
         if config.allow_social:
             SocialGene(origin=self, contents=config.seed_social)
         else:
@@ -161,6 +178,7 @@ class AsocialGene(Gene):
     __mapper_args__ = {"polymorphic_identity": "asocial_gene"}
 
     def _mutated_contents(self):
+        """Asocial gene does not mutate."""
         if config.allow_asocial:
             if random.random() < 0:
                 return max([int(self.contents) + random.sample([-1, 1], 1)[0], 1])
@@ -176,6 +194,7 @@ class SocialGene(Gene):
     __mapper_args__ = {"polymorphic_identity": "social_gene"}
 
     def _mutated_contents(self):
+        """Social gene mutates by incrementing or decrementing by 1."""
         if config.allow_social:
             if random.random() < 0.5:
                 return max([int(self.contents) + random.sample([-1, 1], 1)[0], 1])
@@ -226,6 +245,14 @@ class MotionAgent(Agent):
         return cast(self.property3, Integer)
 
     def calculate_fitness(self):
+        """Calculate the fitness of the node."""
+
+        # For each node you get the submitted motion and caluclate its
+        # distance from the true motion at intervals of 100ms
+        # Error is the sum of these distances.
+        # At each measurement the participant gains (100-error) points.
+        # Fitness is the square of all points earned minus the cost of the social gene
+
         motion = self.infos(type=Motion)[0]
         contents = json.loads(motion.contents)
 
@@ -261,15 +288,17 @@ class MotionAgent(Agent):
             total_error += error
             points += max(100-error, 0)
 
+        social = int(self.infos(type=SocialGene)[0].contents)
+
         self.error = total_error
-        self.fitness = pow(points, 2)
+        self.fitness = pow(max(points - social*config.social_cost, 0), 2)
 
     def _what(self):
+        """Transmit all infos - genes and submitted motion."""
         return Info
 
     def update(self, infos):
+        """Mutate genes."""
         for info in infos:
-            if isinstance(info, Motion):
-                pass
-            elif isinstance(info, Gene):
+            if isinstance(info, Gene):
                 self.mutate(info_in=info)
