@@ -2,7 +2,7 @@
 mode = deploy
 auto_recruit = true
 generation_size = 10
-generations = 6
+generations = 10
 trials = 10
 social_cost = 10
 asocial_cost = 0
