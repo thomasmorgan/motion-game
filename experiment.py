@@ -263,6 +263,7 @@ class MotionAgent(Agent):
         # distance from the true motion at intervals of 100ms
         # Error is the sum of these distances.
         # At each measurement the participant gains (100-error) points.
+        # absolute max points is 5100
         # Fitness is the square of all points earned minus the cost of the social gene
 
         motion = self.infos(type=Motion)[0]
