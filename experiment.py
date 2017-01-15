@@ -244,6 +244,18 @@ class MotionAgent(Agent):
     def error(self):
         return cast(self.property3, Integer)
 
+    @hybrid_property
+    def points(self):
+        return int(self.property4)
+
+    @points.setter
+    def points(self, points):
+        self.property4 = repr(points)
+
+    @points.expression
+    def points(self):
+        return cast(self.property4, Integer)
+
     def calculate_fitness(self):
         """Calculate the fitness of the node."""
 
@@ -291,6 +303,7 @@ class MotionAgent(Agent):
         social = int(self.infos(type=SocialGene)[0].contents)
 
         self.error = total_error
+        self.points = points
         self.fitness = pow(max(points - social*config.social_cost, 0), 2)
 
     def _what(self):
