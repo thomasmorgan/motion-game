@@ -1,14 +1,14 @@
 [Experiment Configuration]
-mode = deploy
+mode = sandbox
 auto_recruit = true
 generation_size = 10
 generations = 10
 trials = 10
-social_cost = 1
+social_cost = 10
 asocial_cost = 0
 allow_social = true
 allow_asocial = true
-seed_social = 3
+seed_social = 5
 seed_asocial = 5
 
 [HIT Configuration]
@@ -42,5 +42,8 @@ clock_on = true
 logfile = -
 
 [Shell Parameters]
-launch_in_sandbox_mode = false
+launch_in_sandbox_mode = true
+
+[Clock Parameters]
+bad_data_threshold = 5
 
