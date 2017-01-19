@@ -101,7 +101,7 @@ class MotionGame(Experiment):
     def bonus(self, participant):
         """Calculate the bonus payment for participants."""
         total_points = sum([n.points for n in participant.nodes()])
-        return min(round(float(total_points)/(2000*self.trials), 2), 1.00)
+        return min(round(float(total_points)/(10000*self.trials), 2), 1.00)
 
 
 class MotionGenerational(DiscreteGenerational):
@@ -297,7 +297,7 @@ class MotionAgent(Agent):
 
             error = int(pow(float(pow((x-true_x), 2) + pow((y-true_y), 2)), 0.5))
             total_error += error
-            points += max(50-error, 0)
+            points += max(400-error, 0)
 
         social = int(self.infos(type=SocialGene)[0].contents)
 
