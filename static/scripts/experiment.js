@@ -163,7 +163,7 @@ show_social_information = function() {
 
 request_input = function() {
     $(".instructions").html("Click on the canvas and move your cursor to recreate the motion of the dot.");
-    enable_drawing();
+    enable_drawing(true);
 };
 
 drawing_complete = function() {
