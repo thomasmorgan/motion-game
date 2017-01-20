@@ -16,7 +16,7 @@ place_circle = function(x, y) {
 
 replay_motion = function(period) {
     period = typeof period !== 'undefined' ? period : 0;
-    circle = paper.circle(xs[0], ys[0], 10);
+    place_circle(x=xs[0], y=ys[0]);
     paint_circle("black");
     start_time = time_now();
     index = 1;
@@ -28,7 +28,7 @@ replay_motion = function(period) {
         if (time_now() - start_time < 5000) {
             setTimeout(draw_next_dot, period);
         } else {
-            circle.remove();
+            paint_circle("grey");
         }
     };
     draw_next_dot();
@@ -71,6 +71,10 @@ add_canvas = function() {
     paper = new Raphael($(".canvas-div").get(0), 400, 400);
     rect = paper.rect(0, 0, 400, 400);
     paint_canvas_grey();
+    circle = paper.circle(50, 50, 10).attr({
+        "stroke-width": 0,
+    });
+    paint_circle("grey");
 };
 
 paint_canvas_grey = function() {
@@ -93,7 +97,7 @@ enable_drawing = function(repeat) {
         xs = [];
         ys = [];
         ts = [];
-        circle = paper.circle(click_location.pageX - x_offset, click_location.pageY - y_offset, 10);
+        place_circle(x=click_location.pageX - x_offset, y=click_location.pageY - y_offset);
         paint_circle("black");
         start_time = time_now();
         xs.push(click_location.pageX - x_offset);
@@ -113,7 +117,7 @@ enable_drawing = function(repeat) {
             function() {
                 $(paper.canvas).off('mousemove');
                 $(paper.canvas).css('cursor', 'auto');
-                circle.remove();
+                paint_circle("grey");
                 drawing_complete();
                 if (repeat === true) {
                     enable_drawing(true);
