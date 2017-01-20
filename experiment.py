@@ -106,6 +106,11 @@ class MotionGame(Experiment):
         total_points = sum([n.points for n in participant.nodes() if n.network_id in nets])
         return min(round(float(total_points)/(10000*len(nets)), 2), 1.00)
 
+    def attention_check(self, participant):
+        nets = [n.id for n in Network.query.filter_by(role="catch").all()]
+        points = [n.points for n in participant.nodes() if n.network_id in nets]
+        return any([p < 13000 for p in points])
+
 
 class MotionGenerational(DiscreteGenerational):
 
