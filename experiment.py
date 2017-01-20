@@ -35,6 +35,8 @@ class MotionGame(Experiment):
         # each network has 2 sources, one for genes, one for the motion
         super(MotionGame, self).setup()
         for net in self.networks():
+            if net.id in [1, 2]:
+                net.role = "catch"
             source = GeneticSource(network=net)
             source.create_infos()
             source = MotionSource(network=net)
@@ -164,7 +166,9 @@ class GeneticSource(Source):
         else:
             SocialGene(origin=self, contents=1)
 
-        if config.allow_asocial:
+        if self.network.role == "catch":
+            AsocialGene(origin=self, contents=10)
+        elif config.allow_asocial:
             AsocialGene(origin=self, contents=config.seed_asocial)
         else:
             AsocialGene(origin=self, contents=0)
@@ -179,7 +183,7 @@ class AsocialGene(Gene):
         """Asocial gene does not mutate."""
         if config.allow_asocial:
             if random.random() < 0:
-                return max([int(self.contents) + random.sample([-1, 1], 1)[0], 1])
+                return min(max([int(self.contents) + random.sample([-1, 1], 1)[0], 1]), 10)
             else:
                 return self.contents
         else:
