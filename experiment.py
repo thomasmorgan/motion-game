@@ -2,7 +2,7 @@
 
 from dallinger.experiments import Experiment
 from dallinger.nodes import Agent, Source
-from dallinger.models import Info, Participant
+from dallinger.models import Info, Participant, Network
 from dallinger.networks import DiscreteGenerational
 from dallinger.information import Gene, Meme
 import random
@@ -102,8 +102,9 @@ class MotionGame(Experiment):
 
     def bonus(self, participant):
         """Calculate the bonus payment for participants."""
-        total_points = sum([n.points for n in participant.nodes()])
-        return min(round(float(total_points)/(10000*self.trials), 2), 1.00)
+        nets = [n.id for n in Network.query.filter_by(role="experiment").all()]
+        total_points = sum([n.points for n in participant.nodes() if n.network_id in nets])
+        return min(round(float(total_points)/(10000*len(nets)), 2), 1.00)
 
 
 class MotionGenerational(DiscreteGenerational):
