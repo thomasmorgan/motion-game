@@ -167,6 +167,7 @@ request_input = function() {
 };
 
 drawing_complete = function() {
+    $(".instructions").html("Use the button below to submit your response, or click the canvas again to have another go.");
     $(".submit-button").prop("disabled",false);
 };
 
