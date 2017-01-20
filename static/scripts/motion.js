@@ -87,6 +87,7 @@ enable_drawing = function(repeat) {
     y_offset = $(paper.canvas).offset().top;
 
     $(paper.canvas).click(function(click_location) {
+        $(".submit-button").prop("disabled",true);
         $(paper.canvas).off('click');
         $(paper.canvas).css('cursor', 'none');
         xs = [];

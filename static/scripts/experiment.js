@@ -18,6 +18,12 @@ $(document).ready(function() {
             }
         }
     });
+    $(".submit-button").prop("disabled",true);
+    $(".submit-button").click(function() {
+        $(".submit-button").prop("disabled",true);
+        save_input();
+        create_agent();
+    });
 });
 
 get_experiment_parameters = function () {
@@ -161,8 +167,7 @@ request_input = function() {
 };
 
 drawing_complete = function() {
-    save_input();
-    create_agent();
+    $(".submit-button").prop("disabled",false);
 };
 
 save_input = function() {
