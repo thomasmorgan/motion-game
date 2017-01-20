@@ -20,7 +20,7 @@ class MotionGame(Experiment):
         super(MotionGame, self).__init__(session)
         self.task = "The Motion Game"
         self.verbose = False
-        self.experiment_repeats = 10
+        self.experiment_repeats = config.trials
         self.known_classes["Motion"] = Motion
 
         self.initial_recruitment_size = config.generation_size
