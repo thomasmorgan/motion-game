@@ -21,24 +21,15 @@ replay_motion = function(period) {
     start_time = time_now();
     index = 1;
     draw_next_dot = function() {
-        setTimeout(
-            function() {
-                place_circle(x=xs[index], y=ys[index]);
-                if (index + 1 < xs.length) {
-                    while (time_now() - start_time > ts[index + 1]) {
-                        index = index + 1;
-                    }
-                    draw_next_dot();
-                } else {
-                    if (time_now() - start_time < 5000) {
-                        draw_next_dot();
-                    } else {
-                        circle.remove();
-                    }
-                }
-            },
-            period
-        );
+        while (index + 1 < xs.length & (time_now() - start_time > ts[index + 1] & time_now() - start_time < 5000)) {
+            index++;
+        }
+        place_circle(x=xs[index], y=ys[index]);
+        if (time_now() - start_time < 5000) {
+            setTimeout(draw_next_dot, period);
+        } else {
+            circle.remove();
+        }
     };
     draw_next_dot();
 };
