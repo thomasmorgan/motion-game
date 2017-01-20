@@ -1,16 +1,29 @@
+paint_circle = function(color) {
+    if (color == "grey") {
+        circle.attr("fill", "#eee");
+    }
+    if (color == "black") {
+        circle.attr("fill", "#000");
+    }
+};
+
+place_circle = function(x, y) {
+    circle.attr({
+        cx: x,
+        cy: y
+    });
+};
+
 replay_motion = function(period) {
     period = typeof period !== 'undefined' ? period : 0;
     circle = paper.circle(xs[0], ys[0], 10);
-    circle.attr('fill', '#000');
+    paint_circle("black");
     start_time = time_now();
     index = 1;
     draw_next_dot = function() {
         setTimeout(
             function() {
-                circle.attr({
-                    cx: xs[index],
-                    cy: ys[index]
-                });
+                place_circle(x=xs[index], y=ys[index]);
                 if (index + 1 < xs.length) {
                     while (time_now() - start_time > ts[index + 1]) {
                         index = index + 1;
@@ -51,7 +64,7 @@ replay_partial_motion = function(sections) {
     }
     setTimeout(
         function() {
-            circle.attr("fill", "#eee");
+            paint_circle("grey");
             paint_canvas_grey();
         },
         5000
@@ -89,7 +102,7 @@ enable_drawing = function(repeat) {
         ys = [];
         ts = [];
         circle = paper.circle(click_location.pageX - x_offset, click_location.pageY - y_offset, 10);
-        circle.attr('fill', '#000');
+        paint_circle("black");
         start_time = time_now();
         xs.push(click_location.pageX - x_offset);
         ys.push(click_location.pageY - y_offset);
@@ -98,10 +111,7 @@ enable_drawing = function(repeat) {
         $(paper.canvas).mousemove(function( event ) {
             x_cor = event.pageX - x_offset;
             y_cor = event.pageY - y_offset;
-            circle.attr({
-                cx: x_cor,
-                cy: y_cor
-            });
+            place_circle(x=x_cor, y=y_cor);
             xs.push(x_cor);
             ys.push(y_cor);
             ts.push(time_now() - start_time);
