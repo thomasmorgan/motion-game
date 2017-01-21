@@ -11,6 +11,7 @@ $(document).ready(function() {
         allow_exit();
         go_to_page("instructions/instruct-2");
     });
+
     $(".true-button").click(function() {
         disable_buttons();
         replay_motion();

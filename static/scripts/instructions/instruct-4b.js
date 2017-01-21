@@ -4,6 +4,14 @@ ts = [0,705,712,721,728,738,744,754,760,772,775,789,791,804,807,822,826,838,841,
 
 $(document).ready(function() {
     $("#next-button").prop("disabled",true);
+    $(".submit-button").prop("disabled",true);
+    $(".submit-button").click(function() {
+        $(paper.canvas).off('click');
+        $(".submit-button").prop("disabled",true);
+        $(".instructions").html("Great, if this were a real trial your response would be saved and you would move onto the next trial. " +
+            "Please click the NEXT button below.");
+        $("#next-button").prop("disabled",false);
+    });
     $("#next-button").click(function() {
         allow_exit();
         go_to_page("instructions/instruct-5");
@@ -51,10 +59,10 @@ show_social_information = function() {
 
 request_input = function() {
     $(".instructions").html("Great, now click on the canvas and move your cursor to recreate the motion of the dot.");
-    enable_drawing();
+    enable_drawing(true);
 };
 
 drawing_complete = function() {
-    $(".instructions").html("Excellent, the practice trial is complete, please click NEXT to continue.");
-    $("#next-button").prop("disabled",false);
+    $(".instructions").html("Excellent, if you are happy with your input click the submit button below. If not, click the canvas to have another go. You can keep trying until you are happy - only your submitted response will count towards your bonus.");
+    $(".submit-button").prop("disabled",false);
 };
