@@ -21,6 +21,7 @@ $(document).ready(function() {
     $(".submit-button").prop("disabled",true);
     $(".submit-button").click(function() {
         $(".submit-button").prop("disabled",true);
+        $(paper.canvas).off('click');
         save_input();
     });
 });
