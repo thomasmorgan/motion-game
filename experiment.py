@@ -98,6 +98,14 @@ class MotionGame(Experiment):
             # If any of the checks fail, print the error and return False.
             import traceback
             traceback.print_exc()
+            try:
+                print nodes
+                print node
+                print infos
+                print received_infos
+                print node.generation
+            except:
+                pass
             return False
 
     def bonus(self, participant):
