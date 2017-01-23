@@ -315,7 +315,8 @@ class MotionAgent(Agent):
 
             error = int(pow(float(pow((x-true_x), 2) + pow((y-true_y), 2)), 0.5))
             total_error += error
-            points += max(400-error, 0)
+            if error < 100:
+                points += 1
 
         social = int(self.infos(type=SocialGene)[0].contents)
 
