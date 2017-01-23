@@ -22,7 +22,6 @@ $(document).ready(function() {
     $(".submit-button").click(function() {
         $(".submit-button").prop("disabled",true);
         save_input();
-        create_agent();
     });
 });
 
@@ -197,6 +196,9 @@ save_input = function() {
             contents: input,
             property1: dat,
             info_type: 'Motion'
+        },
+        success: function (err) {
+            create_agent();
         },
         error: function (err) {
             create_agent();
