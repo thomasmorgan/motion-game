@@ -117,7 +117,7 @@ class MotionGame(Experiment):
     def attention_check(self, participant):
         nets = [n.id for n in Network.query.filter_by(role="catch").all()]
         points = [n.points for n in participant.nodes() if n.network_id in nets]
-        return any([p < 30 for p in points])
+        return not any([p < 20 for p in points])
 
 
 class MotionGenerational(DiscreteGenerational):
