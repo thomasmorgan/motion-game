@@ -28,7 +28,7 @@ $(document).ready(function() {
         if (event.which == 13) {
             $(document).off('keypress');
             $(".instructions").html("Now playing a section of the true motion.");
-            replay_partial_motion(random_sections(5));
+            replay_partial_motion(xs, ys, ts, random_sections(5));
 
             setTimeout(
                 function() {
@@ -46,7 +46,7 @@ show_social_information = function() {
             $(document).off('keypress');
             $(".instructions").html("Now playing the previous participant's input.");
             period = 5000/(2*5 + 1);
-            replay_motion(period);
+            replay_motion(xs, ys, ts, period);
 
             setTimeout(
                 function() {

@@ -5,24 +5,26 @@ var trial = 0;
 
 $(document).ready(function() {
     add_canvas();
+    disable_buttons();
     get_experiment_parameters();
     create_agent();
-    handle_true_motion = false;
-    handle_social_information = false;
-    $(document).keypress(function(event) {
-        if (event.which == 13) {
-            if (handle_true_motion === true) {
-                
-            } else if (handle_social_information === true) {
-                replay_motion(social_capacity);
-            }
-        }
-    });
-    $(".submit-button").prop("disabled",true);
+    
     $(".submit-button").click(function() {
-        $(".submit-button").prop("disabled",true);
-        $(paper.canvas).off('click');
+        disable_buttons();
         save_input();
+    });
+    $(".asocial-button").click(function() {
+        disable_buttons();
+        sections++;
+        replay_partial_motion(true_xs, true_ys, true_ts, visible_sections);
+        setTimeout(enable_buttons, 5300);
+    });
+    $(".social-button").click(function() {
+        disable_buttons();
+        socials++;
+        period = 5000/(2*social_capacity + 1);
+        replay_motion(social_xs, social_ys, social_ts, period);
+        setTimeout(enable_buttons, 5300);
     });
 });
 
@@ -51,6 +53,11 @@ create_agent = function() {
             my_node_id = resp.node.id;
             get_infos();
             trial++;
+            sections = 0;
+            stutters = 0;
+            xs = undefined;
+            ys = undefined;
+            ts = undefined;
             $(".trial").html(trial);
         },
         error: function (err) {
@@ -99,76 +106,21 @@ get_received_infos = function() {
                     true_xs = j["xs"];
                     true_ys = j["ys"];
                     true_ts = j["ts"];
+                    $(".asocial-button").prop("disabled",false);
+                    visible_sections = random_sections(asocial_capacity);
                 } else if (info.type == "motion") {
                     j = JSON.parse(info.contents);
                     social_xs = j["xs"];
                     social_ys = j["ys"];
                     social_ts = j["ts"];
-
+                    $(".social-button").prop("disabled",false);
                 }
             }
-            show_asocial_information();
         },
         error: function (err) {
             create_agent();
         }
     });
-};
-
-show_asocial_information = function() {
-    $(".title").html("Watch the motion of the dot and then reproduce it.");
-    $(".instructions").html("Press ENTER to see a section of the true motion.");
-    $(document).keypress(function(event) {
-        if (event.which == 13) {
-            $(document).off('keypress');
-            $(".instructions").html("Now playing a section of the true motion.");
-            xs = true_xs;
-            ys = true_ys;
-            ts = true_ts;
-            replay_partial_motion(random_sections(asocial_capacity));
-
-            setTimeout(
-                function() {
-                    if (social_xs !== undefined) {
-                        show_social_information();
-                    } else {
-                        request_input();
-                    }
-                }, 5500
-            );
-        }
-    });
-};
-
-show_social_information = function() {
-    $(".instructions").html("Press ENTER to see the previous participant's input.");
-    $(document).keypress(function(event) {
-        if (event.which == 13) {
-            $(document).off('keypress');
-            $(".instructions").html("Now playing the previous participant's input.");
-            xs = social_xs;
-            ys = social_ys;
-            ts = social_ts;
-            period = 5000/(2*social_capacity + 1);
-            replay_motion(period);
-
-            setTimeout(
-                function() {
-                    request_input();
-                }, 5500
-            );
-        }
-    });
-};
-
-request_input = function() {
-    $(".instructions").html("Click on the canvas and move your cursor to recreate the motion of the dot.");
-    enable_drawing(true);
-};
-
-drawing_complete = function() {
-    $(".instructions").html("Use the button below to submit your response, or click the canvas again to have another go.");
-    $(".submit-button").prop("disabled",false);
 };
 
 save_input = function() {

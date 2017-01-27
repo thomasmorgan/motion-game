@@ -14,7 +14,7 @@ place_circle = function(x, y) {
     });
 };
 
-replay_motion = function(period) {
+replay_motion = function(xs, ys, ts, period) {
     period = typeof period !== 'undefined' ? period : 0;
     place_circle(x=xs[0], y=ys[0]);
     paint_circle("black");
@@ -34,7 +34,7 @@ replay_motion = function(period) {
     draw_next_dot();
 };
 
-replay_partial_motion = function(sections) {
+replay_partial_motion = function(xs, ys, ts, sections) {
     if ($.inArray(1, sections) > -1) {
         paint_canvas_grey();
     } else {
@@ -60,7 +60,7 @@ replay_partial_motion = function(sections) {
         },
         5000
     );
-    replay_motion();
+    replay_motion(xs, ys, ts);
 };
 
 time_now = function() {
@@ -85,13 +85,33 @@ paint_canvas_black = function() {
     rect.attr("fill", "#000");
 };
 
+disable_buttons = function() {
+    $(".submit-button").prop("disabled",true);
+    $(".asocial-button").prop("disabled",true);
+    $(".social-button").prop("disabled",true);
+    $(paper.canvas).off('click');
+};
+
+enable_buttons = function() {
+    $(".asocial-button").prop("disabled",false);
+    if (social_xs !== undefined) {
+        $(".social-button").prop("disabled",false);
+    }
+    if (sections > 0 & (stutters > 0 | social_xs === undefined)) {
+        enable_drawing(true);
+    }
+    if (xs !== undefined) {
+        $(".submit-button").prop("disabled",false);
+    }
+};
+
 enable_drawing = function(repeat) {
     if (repeat === undefined) { repeat = false; }
     x_offset = $(paper.canvas).offset().left;
     y_offset = $(paper.canvas).offset().top;
 
     $(paper.canvas).click(function(click_location) {
-        $(".submit-button").prop("disabled",true);
+        disable_buttons();
         $(paper.canvas).off('click');
         $(paper.canvas).css('cursor', 'none');
         xs = [];
@@ -118,7 +138,7 @@ enable_drawing = function(repeat) {
                 $(paper.canvas).off('mousemove');
                 $(paper.canvas).css('cursor', 'auto');
                 paint_circle("grey");
-                drawing_complete();
+                enable_buttons();
                 if (repeat === true) {
                     enable_drawing(true);
                 }
@@ -126,9 +146,6 @@ enable_drawing = function(repeat) {
             5000
         );
     });
-};
-
-drawing_complete = function() {
 };
 
 random_sections = function(size) {
