@@ -1,3 +1,30 @@
+var xs;
+var ys;
+var ts;
+social_clicks = 0;
+asocial_clicks = 0;
+
+$(document).ready(function() {
+    $(".submit-button").click(function() {
+        disable_buttons();
+        save_input();
+    });
+    $(".asocial-button").click(function() {
+        disable_buttons();
+        asocial_clicks++;
+        replay_partial_motion(true_xs, true_ys, true_ts, visible_sections);
+        setTimeout(enable_buttons, 5300);
+    });
+    $(".social-button").click(function() {
+        disable_buttons();
+        social_clicks++;
+        period = 5000/(2*social_capacity + 1);
+        replay_motion(social_xs, social_ys, social_ts, period);
+        setTimeout(enable_buttons, 5300);
+    });
+});
+
+
 paint_circle = function(color) {
     if (color == "grey") {
         circle.attr("fill", "#eee");
@@ -70,6 +97,7 @@ time_now = function() {
 add_canvas = function() {
     paper = new Raphael($(".canvas-div").get(0), 400, 400);
     rect = paper.rect(0, 0, 400, 400);
+    rect.attr("stroke-width", "5");
     paint_canvas_grey();
     circle = paper.circle(50, 50, 10).attr({
         "stroke-width": 0,
@@ -90,6 +118,7 @@ disable_buttons = function() {
     $(".asocial-button").prop("disabled",true);
     $(".social-button").prop("disabled",true);
     $(paper.canvas).off('click');
+    rect.attr("stroke", "#000");
 };
 
 enable_buttons = function() {
@@ -97,7 +126,7 @@ enable_buttons = function() {
     if (social_xs !== undefined) {
         $(".social-button").prop("disabled",false);
     }
-    if (sections > 0 & (stutters > 0 | social_xs === undefined)) {
+    if (asocial_clicks > 0 & (social_clicks > 0 | social_xs === undefined)) {
         enable_drawing(true);
     }
     if (xs !== undefined) {
@@ -109,9 +138,11 @@ enable_drawing = function(repeat) {
     if (repeat === undefined) { repeat = false; }
     x_offset = $(paper.canvas).offset().left;
     y_offset = $(paper.canvas).offset().top;
+    rect.attr("stroke", "#119E1E");
 
     $(paper.canvas).click(function(click_location) {
         disable_buttons();
+        rect.attr("stroke", "#119E1E");
         $(paper.canvas).off('click');
         $(paper.canvas).css('cursor', 'none');
         xs = [];
@@ -138,6 +169,7 @@ enable_drawing = function(repeat) {
                 $(paper.canvas).off('mousemove');
                 $(paper.canvas).css('cursor', 'auto');
                 paint_circle("grey");
+                rect.attr("stroke", "#000");
                 enable_buttons();
                 if (repeat === true) {
                     enable_drawing(true);

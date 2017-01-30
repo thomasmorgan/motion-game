@@ -7,6 +7,4 @@ $(document).ready(function() {
         allow_exit();
         go_to_page("instructions/instruct-1");
     });
-    add_canvas();
-    enable_drawing(repeat=true);
 });

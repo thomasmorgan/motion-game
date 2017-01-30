@@ -8,24 +8,6 @@ $(document).ready(function() {
     disable_buttons();
     get_experiment_parameters();
     create_agent();
-    
-    $(".submit-button").click(function() {
-        disable_buttons();
-        save_input();
-    });
-    $(".asocial-button").click(function() {
-        disable_buttons();
-        sections++;
-        replay_partial_motion(true_xs, true_ys, true_ts, visible_sections);
-        setTimeout(enable_buttons, 5300);
-    });
-    $(".social-button").click(function() {
-        disable_buttons();
-        socials++;
-        period = 5000/(2*social_capacity + 1);
-        replay_motion(social_xs, social_ys, social_ts, period);
-        setTimeout(enable_buttons, 5300);
-    });
 });
 
 get_experiment_parameters = function () {
@@ -53,8 +35,8 @@ create_agent = function() {
             my_node_id = resp.node.id;
             get_infos();
             trial++;
-            sections = 0;
-            stutters = 0;
+            asocial_clicks = 0;
+            social_clicks = 0;
             xs = undefined;
             ys = undefined;
             ts = undefined;
