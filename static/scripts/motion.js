@@ -3,6 +3,7 @@ var ys;
 var ts;
 social_clicks = 0;
 asocial_clicks = 0;
+replays = 0;
 
 $(document).ready(function() {
     $(".submit-button").click(function() {
@@ -11,6 +12,7 @@ $(document).ready(function() {
     });
     $(".replay-button").click(function() {
         disable_buttons();
+        replays++;
         replay_motion(xs, ys, ts);
         setTimeout(enable_buttons, 5300);
     });

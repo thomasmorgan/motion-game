@@ -37,6 +37,7 @@ create_agent = function() {
             trial++;
             asocial_clicks = 0;
             social_clicks = 0;
+            replays = 0;
             xs = undefined;
             ys = undefined;
             ts = undefined;
@@ -120,7 +121,10 @@ save_input = function() {
         social_xs: social_xs,
         social_ys: social_ys,
         social_ts: social_ts,
-        trial: trial
+        trial: trial,
+        social_clicks: social_clicks,
+        asocia_clicks: asocial_clicks,
+        replays: replays
     };
     dat = JSON.stringify(dat);
 
