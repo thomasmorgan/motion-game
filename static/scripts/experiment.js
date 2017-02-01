@@ -33,7 +33,6 @@ create_agent = function() {
         type: 'json',
         success: function (resp) {
             my_node_id = resp.node.id;
-            get_infos();
             trial++;
             asocial_clicks = 0;
             social_clicks = 0;
@@ -42,10 +41,32 @@ create_agent = function() {
             ys = undefined;
             ts = undefined;
             $(".trial").html(trial);
+            get_points();
         },
         error: function (err) {
             allow_exit();
             go_to_page("questionnaire");
+        }
+    });
+};
+
+get_points = function() {
+    reqwest({
+        url: "/points/" + participant_id,
+        method: 'get',
+        type: 'json',
+        success: function (resp) {
+            points = resp.points;
+            if (trial == 1) {
+                $(".current_bonus").html("0.00");
+                $(".projected_bonus").html("?.??");
+            } else {
+                current_bonus = (Math.min(Math.max(points - 20*(trials), 0.00)/(30*(trials)), 1.00)*2.50).toFixed(2);
+                $(".current_bonus").html(current_bonus);
+                projected_bonus = (Math.min((points - 20*(trial-1))/(30*(trial-1)), 1.00)*2.50).toFixed(2);
+                $(".projected_bonus").html(projected_bonus);
+            }
+            get_infos();
         }
     });
 };

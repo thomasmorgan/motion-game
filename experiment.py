@@ -11,6 +11,7 @@ from sqlalchemy.sql.expression import cast
 from sqlalchemy import Integer
 from dallinger import config as dalcon
 import json
+from flask import Blueprint, Response
 config = dalcon.experiment_configuration
 
 
@@ -262,7 +263,10 @@ class MotionAgent(Agent):
 
     @hybrid_property
     def points(self):
-        return int(self.property4)
+        try:
+            return int(self.property4)
+        except:
+            return None
 
     @points.setter
     def points(self, points):
@@ -333,3 +337,19 @@ class MotionAgent(Agent):
         for info in infos:
             if isinstance(info, Gene):
                 self.mutate(info_in=info)
+
+extra_routes = Blueprint(
+    'extra_routes', __name__,
+    template_folder='templates',
+    static_folder='static')
+
+
+@extra_routes.route("/points/<int:participant_id>", methods=["GET"])
+def current_points(participant_id):
+
+    nodes = MotionAgent.query.filter_by(participant_id=participant_id).all()
+    total_points = sum([n.points for n in nodes if n.points is not None])
+
+    data = {"status": "success",
+            "points": total_points}
+    return Response(json.dumps(data), status=200, mimetype='application/json')
