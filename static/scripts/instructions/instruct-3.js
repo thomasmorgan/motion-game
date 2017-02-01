@@ -20,12 +20,6 @@ $(document).ready(function() {
         go_to_page("instructions/instruct-2");
     });
     add_canvas();
-    $(".instructions").html("Let's do a practice trial. The canvas below is where you will move the dot, but before you can do " +
-      "that you need to click the Section and Stutter buttons to watch a part of the dot's movement and the stuttery replay of " +
-      "the previous participant's response. The border of the canvas will turn green when you are allowed to move the dot.");
-    $(".instructions2").html("You can click the Section and Stutter buttons as many times as you wish. You can also click the " +
-      "canvas again have another go at moving the dot - only your final attempt will count. Once you are happy you should click " +
-      "the Submit button.");
 });
 
 save_input = function() {
