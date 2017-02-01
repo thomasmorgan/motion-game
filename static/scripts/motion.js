@@ -9,6 +9,11 @@ $(document).ready(function() {
         disable_buttons();
         save_input();
     });
+    $(".replay-button").click(function() {
+        disable_buttons();
+        replay_motion(xs, ys, ts);
+        setTimeout(enable_buttons, 5300);
+    });
     $(".asocial-button").click(function() {
         disable_buttons();
         asocial_clicks++;
@@ -117,6 +122,7 @@ disable_buttons = function() {
     $(".submit-button").prop("disabled",true);
     $(".asocial-button").prop("disabled",true);
     $(".social-button").prop("disabled",true);
+    $(".replay-button").prop("disabled",true);
     $(paper.canvas).off('click');
     rect.attr("stroke", "#000");
 };
@@ -131,6 +137,7 @@ enable_buttons = function() {
     }
     if (xs !== undefined) {
         $(".submit-button").prop("disabled",false);
+        $(".replay-button").prop("disabled",false);
     }
 };
 

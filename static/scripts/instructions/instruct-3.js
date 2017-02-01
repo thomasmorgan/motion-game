@@ -10,6 +10,7 @@ social_capacity = 5;
 $(document).ready(function() {
     $("#next-button").prop("disabled",true);
     $(".submit-button").prop("disabled",true);
+    $(".replay-button").prop("disabled",true);
     $("#next-button").click(function() {
         allow_exit();
         go_to_page("instructions/instruct-4");
