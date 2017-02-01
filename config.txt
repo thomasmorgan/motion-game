@@ -8,14 +8,15 @@ social_cost = 0.2
 asocial_cost = 0
 allow_social = true
 allow_asocial = true
-seed_social = 5
+seed_social = 2
 seed_asocial = 5
+max_bonus = 2.50
 
 [HIT Configuration]
 title = Move the dot
 description = Reproduce the movement of a dot.
 amt_keywords = Psychology, memory
-base_payment = 1.00
+base_payment = 0.50
 lifetime = 24
 duration = 0.3
 us_only = true
