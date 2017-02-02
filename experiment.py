@@ -113,7 +113,7 @@ class MotionGame(Experiment):
         """Calculate the bonus payment for participants."""
         nets = [n.id for n in Network.query.all()]
         total_points = sum([max(n.points - 20, 0) for n in participant.nodes() if n.network_id in nets])
-        return round(min(float(total_points)/(30*len(nets)), 1.00)*config.max_bonus, 2)
+        return round(min(float(total_points)/(20*len(nets)), 1.00)*config.max_bonus, 2)
 
     def attention_check(self, participant):
         nets = [n.id for n in Network.query.filter_by(role="catch").all()]
