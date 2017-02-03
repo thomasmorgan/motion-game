@@ -144,7 +144,7 @@ save_input = function() {
         social_ts: social_ts,
         trial: trial,
         social_clicks: social_clicks,
-        asocia_clicks: asocial_clicks,
+        asocial_clicks: asocial_clicks,
         replays: replays
     };
     dat = JSON.stringify(dat);
