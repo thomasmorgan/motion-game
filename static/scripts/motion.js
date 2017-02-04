@@ -190,13 +190,10 @@ enable_drawing = function(repeat) {
 };
 
 random_sections = function(size) {
-    arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    var shuffled = arr.slice(0), i = arr.length, temp, index;
-    while (i--) {
-        index = Math.floor((i + 1) * Math.random());
-        temp = shuffled[index];
-        shuffled[index] = shuffled[i];
-        shuffled[i] = temp;
+    start = Math.floor(Math.random() * (11-size));
+    temp = [];
+    for (i = 0;i<size;i++) {
+        temp.push(start+i);
     }
-    return shuffled.slice(0, size);
+    return temp;
 };
