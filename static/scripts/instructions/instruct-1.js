@@ -61,7 +61,7 @@ save_input = function() {
         }
     }
 
-    bonus = Math.max(Math.min(((points - 20)/30)*2.50, 2.50), 0.00).toFixed(2);
+    bonus = Math.max(Math.min(((points - 20)/20)*2.50, 2.50), 0.00).toFixed(2);
     $(".bonus").html("At this level of performance your bonus would be $" + bonus + ".");
     if (points < 40) {
         $(".feedback").html("You scored " + points + "/51. Please try again.");
