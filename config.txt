@@ -9,7 +9,7 @@ asocial_cost = 0
 allow_social = true
 allow_asocial = true
 seed_social = 2
-seed_asocial = 2
+seed_asocial = 1
 max_bonus = 2.50
 
 [HIT Configuration]
