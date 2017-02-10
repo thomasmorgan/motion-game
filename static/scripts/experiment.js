@@ -63,7 +63,7 @@ get_points = function() {
             } else {
                 current_bonus = (Math.min(Math.max(points - 20*(trials), 0.00)/(20*(trials)), 1.00)*2.50).toFixed(2);
                 $(".current_bonus").html(current_bonus);
-                projected_bonus = (Math.min((points - 20*(trial-1))/(20*(trial-1)), 1.00)*2.50).toFixed(2);
+                projected_bonus = (Math.min(Math.max(points - 20*(trial-1), 0.00)/(20*(trial-1)), 1.00)*2.50).toFixed(2);
                 $(".projected_bonus").html(projected_bonus);
             }
             get_infos();
