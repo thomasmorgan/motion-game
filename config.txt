@@ -23,14 +23,11 @@ us_only = true
 approve_requirement = 95
 contact_email_on_error = suchow@berkeley.edu
 ad_group = Foraging
-psiturk_keywords = memory
 organization_name = Arizona State University
 browser_exclude_rule = MSIE, mobile, tablet
 
 [Database Parameters]
 database_url = postgresql://postgres@localhost/dallinger
-table_name = psiturk
-anonymize_data = false
 database_size = standard-2
 
 [Server Parameters]
@@ -43,8 +40,5 @@ clock_on = true
 logfile = -
 
 [Shell Parameters]
-launch_in_sandbox_mode = true
-
-[Clock Parameters]
-bad_data_threshold = 5
+launch_in_sandbox_mode = false
 

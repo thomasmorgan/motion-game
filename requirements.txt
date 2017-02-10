@@ -1,1 +1,1 @@
--e git://github.com/Dallinger/Dallinger.git@defend-custom-against-AWS#egg=dallinger
+-e git://github.com/Dallinger/Dallinger.git@development#egg=dallinger

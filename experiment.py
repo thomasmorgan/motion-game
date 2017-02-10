@@ -9,10 +9,22 @@ import random
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.expression import cast
 from sqlalchemy import Integer
-from dallinger import config as dalcon
+from dallinger.config import get_config
+config = get_config()
 import json
 from flask import Blueprint, Response
-config = dalcon.experiment_configuration
+
+
+def extra_parameters():
+    config.register('generation_size', int)
+    config.register('generations', int)
+    config.register('trials', int)
+    config.register('social_cost', float)
+    config.register('asocial_cost', float)
+    config.register('allow_social', bool)
+    config.register('allow_asocial', bool)
+    config.register('seed_social', int)
+    config.register('seed_asocial', int)
 
 
 class MotionGame(Experiment):
@@ -21,11 +33,11 @@ class MotionGame(Experiment):
         super(MotionGame, self).__init__(session)
         self.task = "The Motion Game"
         self.verbose = False
-        self.experiment_repeats = config.trials
+        self.experiment_repeats = config.get("trials")
         self.known_classes["Motion"] = Motion
 
-        self.initial_recruitment_size = config.generation_size
-        self.trials = config.trials
+        self.initial_recruitment_size = config.get("generation_size")
+        self.trials = config.get("trials")
 
         if not self.networks():
             self.setup()
@@ -45,8 +57,8 @@ class MotionGame(Experiment):
 
     def create_network(self):
         """Return a new network."""
-        return MotionGenerational(generations=config.generations,
-                                  generation_size=config.generation_size,
+        return MotionGenerational(generations=config.get("generations"),
+                                  generation_size=config.get("generation_size"),
                                   initial_source=True)
 
     def create_node(self, participant, network):
@@ -56,9 +68,9 @@ class MotionGame(Experiment):
     def recruit(self):
         """Recruit participants if necessary."""
         num_approved = len(Participant.query.filter_by(status="approved").all())
-        if num_approved % config.generation_size == 0 and num_approved < config.generations*config.generation_size:
+        if num_approved % config.get("generation_size") == 0 and num_approved < config.get("generations")*config.get("generation_size"):
             self.log("generation finished, recruiting another")
-            self.recruiter().recruit_participants(n=config.generation_size)
+            self.recruiter().recruit_participants(n=config.get("generation_size"))
 
     def info_post_request(self, node, info):
         """Whenever a info is submitted, calculate the fitness of the node."""
@@ -113,7 +125,7 @@ class MotionGame(Experiment):
         """Calculate the bonus payment for participants."""
         nets = [n.id for n in Network.query.all()]
         total_points = sum([max(n.points - 20, 0) for n in participant.nodes() if n.network_id in nets])
-        return round(min(float(total_points)/(20*len(nets)), 1.00)*config.max_bonus, 2)
+        return round(min(float(total_points)/(20*len(nets)), 1.00)*config.get("max_bonus"), 2)
 
     def attention_check(self, participant):
         nets = [n.id for n in Network.query.filter_by(role="catch").all()]
@@ -186,14 +198,14 @@ class GeneticSource(Source):
     def create_infos(self):
         """Create initial genes, values drawn from config file."""
         if config.allow_social:
-            SocialGene(origin=self, contents=config.seed_social)
+            SocialGene(origin=self, contents=config.get("seed_social"))
         else:
             SocialGene(origin=self, contents=1)
 
         if self.network.role == "catch":
             AsocialGene(origin=self, contents=10)
         elif config.allow_asocial:
-            AsocialGene(origin=self, contents=config.seed_asocial)
+            AsocialGene(origin=self, contents=config.get("seed_asocial"))
         else:
             AsocialGene(origin=self, contents=0)
 
@@ -205,7 +217,7 @@ class AsocialGene(Gene):
 
     def _mutated_contents(self):
         """Asocial gene does not mutate."""
-        if config.allow_asocial:
+        if config.get("allow_asocial"):
             if random.random() < 0:
                 return min(max([int(self.contents) + random.sample([-1, 1], 1)[0], 1]), 10)
             else:
@@ -221,7 +233,7 @@ class SocialGene(Gene):
 
     def _mutated_contents(self):
         """Social gene mutates by incrementing or decrementing by 1."""
-        if config.allow_social:
+        if config.get("allow_social"):
             if random.random() < 0.5:
                 return max([int(self.contents) + random.sample([-1, 1], 1)[0], 1])
             else:
@@ -335,7 +347,7 @@ class MotionAgent(Agent):
 
         self.error = total_error
         self.points = points
-        self.fitness = pow(max(points - social*config.social_cost, 0), 2)
+        self.fitness = pow(max(points - social*config.get("social_cost"), 0), 2)
 
     def _what(self):
         """Transmit all infos - genes and submitted motion."""
