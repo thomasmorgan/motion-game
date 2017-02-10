@@ -190,10 +190,10 @@ enable_drawing = function(repeat) {
 };
 
 random_sections = function(size) {
-    start = Math.floor(Math.random() * (11-size));
-    temp = [];
-    for (i = 0;i<size;i++) {
-        temp.push(start+i);
+    var foo = [];
+    bump = Math.floor(Math.random()*(11-size));
+    for (var i = 1; i <= size; i++) {
+       foo.push(i+bump);
     }
-    return temp;
+    return foo;
 };
