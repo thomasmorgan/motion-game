@@ -147,6 +147,15 @@ class MotionGenerational(DiscreteGenerational):
         source = self.nodes(type=MotionSource)[0]
         source.connect(node)
         source.transmit(to_whom=node)
+        if node.generation > 0:
+            prev_agents = MotionAgent.query\
+                .filter_by(failed=False,
+                           network_id=self.id,
+                           generation=(node.generation - 1))\
+                .all()
+            parent = random.sample(prev_agents, 1)[0]
+            parent.connect(whom=node)
+            parent.transmit(what=Motion, to_whom=node)
         node.receive()
 
 
@@ -330,7 +339,7 @@ class MotionAgent(Agent):
 
     def _what(self):
         """Transmit all infos - genes and submitted motion."""
-        return Info
+        return Gene
 
     def update(self, infos):
         """Mutate genes."""
