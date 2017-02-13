@@ -1,15 +1,15 @@
 [Experiment Configuration]
 mode = sandbox
 auto_recruit = true
-generation_size = 10
-generations = 10
+generation_size = 2
+generations = 2
 trials = 12
 social_cost = 0.2
 asocial_cost = 0
 allow_social = true
 allow_asocial = true
 seed_social = 2
-seed_asocial = 1
+seed_asocial = 5
 max_bonus = 2.50
 bonus_denominator = 30
 
