@@ -39,6 +39,3 @@ notification_url = None
 clock_on = true
 logfile = -
 
-[Shell Parameters]
-launch_in_sandbox_mode = false
-

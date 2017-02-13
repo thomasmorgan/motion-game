@@ -25,6 +25,7 @@ def extra_parameters():
     config.register('allow_asocial', bool)
     config.register('seed_social', int)
     config.register('seed_asocial', int)
+    config.register('max_bonus', float)
 
 
 class MotionGame(Experiment):
@@ -197,14 +198,14 @@ class GeneticSource(Source):
 
     def create_infos(self):
         """Create initial genes, values drawn from config file."""
-        if config.allow_social:
+        if config.get("allow_social"):
             SocialGene(origin=self, contents=config.get("seed_social"))
         else:
             SocialGene(origin=self, contents=1)
 
         if self.network.role == "catch":
             AsocialGene(origin=self, contents=10)
-        elif config.allow_asocial:
+        elif config.get("allow_asocial"):
             AsocialGene(origin=self, contents=config.get("seed_asocial"))
         else:
             AsocialGene(origin=self, contents=0)
