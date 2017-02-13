@@ -26,6 +26,7 @@ def extra_parameters():
     config.register('seed_social', int)
     config.register('seed_asocial', int)
     config.register('max_bonus', float)
+    config.register('bonus_denominator', int)
 
 
 class MotionGame(Experiment):
@@ -39,6 +40,7 @@ class MotionGame(Experiment):
 
         self.initial_recruitment_size = config.get("generation_size")
         self.trials = config.get("trials")
+        self.bonus_denominator = config.get("bonus_denominator")
 
         if not self.networks():
             self.setup()
@@ -126,7 +128,7 @@ class MotionGame(Experiment):
         """Calculate the bonus payment for participants."""
         nets = [n.id for n in Network.query.all()]
         total_points = sum([max(n.points - 20, 0) for n in participant.nodes() if n.network_id in nets])
-        return round(min(float(total_points)/(20*len(nets)), 1.00)*config.get("max_bonus"), 2)
+        return round(min(float(total_points)/(config.bonus_denominator*len(nets)), 1.00)*config.get("max_bonus"), 2)
 
     def attention_check(self, participant):
         nets = [n.id for n in Network.query.filter_by(role="catch").all()]
