@@ -11,6 +11,14 @@ $(document).ready(function() {
         allow_exit();
         go_to_page("instructions/instruct-2");
     });
+    reqwest({
+        url: "/experiment/max_error",
+        method: 'get',
+        type: 'json',
+        success: function (resp) {
+            max_error = resp.max_error;
+        }
+    });
     $("#next-button").prop("disabled",true);
     $(".submit-button").prop("disabled",true);
     $(".replay-button").prop("disabled",true);
@@ -56,7 +64,7 @@ save_input = function() {
         true_y = true_ys[ii];
 
         error = Math.round(Math.pow(Math.pow(x-true_x, 2) + Math.pow(y-true_y, 2), 0.5));
-        if (error < 150) {
+        if (error < max_error) {
             points += 1;
         }
     }

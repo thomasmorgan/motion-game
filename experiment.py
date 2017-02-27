@@ -27,6 +27,7 @@ def extra_parameters():
     config.register('seed_asocial', int)
     config.register('max_bonus', float)
     config.register('bonus_denominator', int)
+    config.register('max_error', int)
 
 
 class MotionGame(Experiment):
@@ -41,6 +42,7 @@ class MotionGame(Experiment):
         self.initial_recruitment_size = config.get("generation_size")
         self.trials = config.get("trials")
         self.bonus_denominator = config.get("bonus_denominator")
+        self.max_error = config.get("max_error")
 
         if not self.networks():
             self.setup()
@@ -343,7 +345,7 @@ class MotionAgent(Agent):
 
             error = int(pow(float(pow((x-true_x), 2) + pow((y-true_y), 2)), 0.5))
             total_error += error
-            if error < 150:
+            if error < config.get("max_error"):
                 points += 1
 
         social = int(self.infos(type=SocialGene)[0].contents)
