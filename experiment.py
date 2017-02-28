@@ -28,6 +28,7 @@ def extra_parameters():
     config.register('max_bonus', float)
     config.register('bonus_denominator', int)
     config.register('max_error', int)
+    config.register('ms_per_px', int)
 
 
 class MotionGame(Experiment):
@@ -43,6 +44,7 @@ class MotionGame(Experiment):
         self.trials = config.get("trials")
         self.bonus_denominator = config.get("bonus_denominator")
         self.max_error = config.get("max_error")
+        self.ms_per_px = config.get("ms_per_px")
 
         if not self.networks():
             self.setup()
@@ -305,13 +307,6 @@ class MotionAgent(Agent):
     def calculate_fitness(self):
         """Calculate the fitness of the node."""
 
-        # For each node you get the submitted motion and caluclate its
-        # distance from the true motion at intervals of 100ms
-        # Error is the sum of these distances.
-        # At each measurement the participant gains (100-error) points.
-        # absolute max points is 5100
-        # Fitness is the square of all points earned minus the cost of the social gene
-
         motion = self.infos(type=Motion)[0]
         contents = json.loads(motion.contents)
 
@@ -325,34 +320,16 @@ class MotionAgent(Agent):
         true_ys = dat["true_ys"]
         true_ts = dat["true_ts"]
 
-        total_error = 0
-        points = 0
+        hausdorff = 0
+        for x, y, t in zip(true_xs, true_ys, true_ts):
+            closest = min([pow(pow(x-tx, 2) + pow(y-ty, 2) + pow((t-tt)/config.get("ms_per_px"), 2), 0.5) for tx, ty, tt in zip(xs, ys, ts)])
+            if closest > hausdorff:
+                hausdorff = closest
 
-        for i in range(0, 5001, 100):
-            try:
-                ii = next(t[0] for t in enumerate(ts) if t[1] > i) - 1
-            except:
-                ii = -1
-            x = xs[ii]
-            y = ys[ii]
-
-            try:
-                ii = next(t[0] for t in enumerate(true_ts) if t[1] > i) - 1
-            except:
-                ii = -1
-            true_x = true_xs[ii]
-            true_y = true_ys[ii]
-
-            error = int(pow(float(pow((x-true_x), 2) + pow((y-true_y), 2)), 0.5))
-            total_error += error
-            if error < config.get("max_error"):
-                points += 1
-
+        self.error = hausdorff
+        self.points = max(0, 100-hausdorff)
         social = int(self.infos(type=SocialGene)[0].contents)
-
-        self.error = total_error
-        self.points = points
-        self.fitness = pow(max(points - social*config.get("social_cost"), 0), 2)
+        self.fitness = pow(max(self.points - social*config.get("social_cost"), 0), 2)
 
     def _what(self):
         """Transmit all infos - genes and submitted motion."""

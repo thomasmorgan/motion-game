@@ -19,6 +19,14 @@ $(document).ready(function() {
             max_error = resp.max_error;
         }
     });
+    reqwest({
+        url: "/experiment/ms_per_px",
+        method: 'get',
+        type: 'json',
+        success: function (resp) {
+            ms_per_px = resp.me_per_px;
+        }
+    });
     $("#next-button").prop("disabled",true);
     $(".submit-button").prop("disabled",true);
     $(".replay-button").prop("disabled",true);
@@ -26,48 +34,21 @@ $(document).ready(function() {
 });
 
 save_input = function() {
-    points = 0;
-    for (i = 0; i<5001; i+=100) {
-
-        dum = true;
-        ii = 0;
-        while (dum === true & ii < ts.length) {
-            if (ts[ii] < i) {
-                ii++;
-            } else {
-                ii--;
-                dum = false;
-            }
+    hausdorff = 0;
+    for (i=0; i<length(true_xs); i++) {
+        ds = [];
+        for (ii=0; ii<length(xs); ii++) {
+            ds.push(Math.pow(Math.pow(true_xs[i] - xs[ii], 2) + Math.pow(true_ys[i] - ys[ii], 2) + Math.pow((true_ts[i] - ts[ii])/ms_per_px, 2)), 0.5);
         }
-        if (dum === true) {
-            ii = ts.length-1;
-        }
-
-        x = xs[ii];
-        y = ys[ii];
-
-        dum = true;
-        ii = 0;
-        while (dum === true & ii < true_ts.length) {
-            if (true_ts[ii] < i) {
-                ii++;
-            } else {
-                ii--;
-                dum = false;
-            }
-        }
-        if (dum === true) {
-            ii = true_ts.length-1;
-        }
-
-        true_x = true_xs[ii];
-        true_y = true_ys[ii];
-
-        error = Math.round(Math.pow(Math.pow(x-true_x, 2) + Math.pow(y-true_y, 2), 0.5));
-        if (error < max_error) {
-            points += 1;
+        min_d = min(ds);
+        console.log(min_d);
+        if (ds > hausdorff) {
+            hausdorff = ds;
         }
     }
+
+    error = hausdorff;
+    points = max(0, 100-hausdorff);
 
     bonus = Math.max(Math.min(((points - 20)/20)*2.50, 2.50), 0.00).toFixed(2);
     $(".bonus").html("At this level of performance your bonus would be $" + bonus + ".");
