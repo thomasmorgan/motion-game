@@ -13,7 +13,7 @@ seed_asocial = 5
 max_bonus = 2.50
 bonus_denominator = 30
 max_error = 100
-ms_per_px = 1
+ms_per_px = 10
 
 [HIT Configuration]
 title = Move the dot
