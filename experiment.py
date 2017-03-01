@@ -322,12 +322,12 @@ class MotionAgent(Agent):
 
         hausdorff = 0
         for x, y, t in zip(true_xs, true_ys, true_ts):
-            closest = min([pow(pow(x-tx, 2) + pow(y-ty, 2) + pow((t-tt)/config.get("ms_per_px"), 2), 0.5) for tx, ty, tt in zip(xs, ys, ts)])
+            closest = round(min([pow(pow(x-tx, 2) + pow(y-ty, 2) + pow((t-tt)/config.get("ms_per_px"), 2), 0.5) for tx, ty, tt in zip(xs, ys, ts)]))
             if closest > hausdorff:
                 hausdorff = closest
 
         self.error = hausdorff
-        self.points = max(0, 100-hausdorff)
+        self.points = max(0, 100-round(hausdorff/2))
         social = int(self.infos(type=SocialGene)[0].contents)
         self.fitness = pow(max(self.points - social*config.get("social_cost"), 0), 2)
 

@@ -40,14 +40,14 @@ save_input = function() {
         for (ii=0; ii<xs.length; ii++) {
             ds.push(Math.pow(Math.pow(true_xs[i] - xs[ii], 2) + Math.pow(true_ys[i] - ys[ii], 2) + Math.pow((true_ts[i] - ts[ii])/ms_per_px, 2), 0.5));
         }
-        min_d = Math.min.apply(null, ds);
+        min_d = Math.round(Math.min.apply(null, ds));
         if (min_d > hausdorff) {
             hausdorff = min_d;
         }
     }
 
     error = hausdorff;
-    points = Math.max(0, 100-hausdorff);
+    points = Math.max(0, 100-Math.round(hausdorff/2));
 
     bonus = Math.max(Math.min(((points - 20)/20)*2.50, 2.50), 0.00).toFixed(2);
     $(".bonus").html("At this level of performance your bonus would be $" + bonus + ".");
