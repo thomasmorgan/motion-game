@@ -130,14 +130,13 @@ class MotionGame(Experiment):
 
     def bonus(self, participant):
         """Calculate the bonus payment for participants."""
-        nets = [n.id for n in Network.query.all()]
-        total_points = sum([max(n.points - 20, 0) for n in participant.nodes() if n.network_id in nets])
-        return round(min(float(total_points)/(config.bonus_denominator*len(nets)), 1.00)*config.get("max_bonus"), 2)
+        total_points = sum([n.points for n in participant.nodes()])
+        return round(min(float(total_points)/(config.bonus_denominator*self.trials), 1.00)*config.get("max_bonus"), 2)
 
     def attention_check(self, participant):
         nets = [n.id for n in Network.query.filter_by(role="catch").all()]
         points = [n.points for n in participant.nodes() if n.network_id in nets]
-        return not any([p < 20 for p in points])
+        return not any([p < 40 for p in points])
 
 
 class MotionGenerational(DiscreteGenerational):
@@ -327,7 +326,7 @@ class MotionAgent(Agent):
                 hausdorff = closest
 
         self.error = hausdorff
-        self.points = max(0, 100-round(hausdorff/2))
+        self.points = int(round(max(0, 100-round(hausdorff/2))))
         social = int(self.infos(type=SocialGene)[0].contents)
         self.fitness = pow(max(self.points - social*config.get("social_cost"), 0), 2)
 
@@ -352,7 +351,6 @@ def current_points(participant_id):
 
     nodes = MotionAgent.query.filter_by(participant_id=participant_id).all()
     total_points = sum([n.points for n in nodes if n.points is not None])
-
     data = {"status": "success",
             "points": total_points}
     return Response(json.dumps(data), status=200, mimetype='application/json')

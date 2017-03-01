@@ -73,9 +73,9 @@ get_points = function() {
                 $(".current_bonus").html("0.00");
                 $(".projected_bonus").html("?.??");
             } else {
-                current_bonus = (Math.min(Math.max(points - 20*(trials), 0.00)/(bonus_denominator*(trials)), 1.00)*2.50).toFixed(2);
+                current_bonus = (Math.min(Math.max(points, 0.00)/(bonus_denominator*trials), 1.00)*2.50).toFixed(2);
                 $(".current_bonus").html(current_bonus);
-                projected_bonus = (Math.min(Math.max(points - 20*(trial-1), 0.00)/(bonus_denominator*(trial-1)), 1.00)*2.50).toFixed(2);
+                projected_bonus = (Math.min(Math.max(points, 0.00)/(bonus_denominator*(trial-1)), 1.00)*2.50).toFixed(2);
                 $(".projected_bonus").html(projected_bonus);
             }
             get_infos();

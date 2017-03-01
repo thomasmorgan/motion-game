@@ -27,6 +27,18 @@ $(document).ready(function() {
             ms_per_px = resp.ms_per_px;
         }
     });
+    reqwest({
+        url: "/experiment/bonus_denominator",
+        method: 'get',
+        type: 'json',
+        success: function (resp) {
+            bonus_denominator = resp.bonus_denominator;
+            $(".trials").html(trials);
+        },
+        error: function (err) {
+            create_agent();
+        }
+    });
     $("#next-button").prop("disabled",true);
     $(".submit-button").prop("disabled",true);
     $(".replay-button").prop("disabled",true);
@@ -49,12 +61,12 @@ save_input = function() {
     error = hausdorff;
     points = Math.max(0, 100-Math.round(hausdorff/2));
 
-    bonus = Math.max(Math.min(((points - 20)/20)*2.50, 2.50), 0.00).toFixed(2);
+    bonus = Math.max(Math.min(((points)/bonus_denominator)*2.50, 2.50), 0.00).toFixed(2);
     $(".bonus").html("At this level of performance your bonus would be $" + bonus + ".");
-    if (points < 40) {
-        $(".feedback").html("You scored " + points + "/51. Please try again.");
+    if (points < 70) {
+        $(".feedback").html("You scored " + points + "/100. Please try again.");
     } else {
-        $(".feedback").html("You scored " + points + "/51. Use the Next button to continue or keep practicing.");
+        $(".feedback").html("You scored " + points + "/100. Use the Next button to continue or keep practicing.");
         $("#next-button").prop("disabled",false);
     }
     enable_buttons();
