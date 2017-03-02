@@ -22,6 +22,7 @@ def extra_parameters():
     config.register('bonus_denominator', int)
     config.register('max_error', int)
     config.register('ms_per_px', int)
+    config.register('hausdorff_interval', int)
 
 
 class MotionGame(Experiment):

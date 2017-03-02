@@ -14,6 +14,7 @@ max_bonus = 2.50
 bonus_denominator = 100
 max_error = 100
 ms_per_px = 10
+hausdorff_interval = 10
 
 [HIT Configuration]
 title = Move the dot
