@@ -2,7 +2,6 @@
 
 from dallinger.experiments import Experiment
 from dallinger.models import Participant, Network
-from dallinger.information import Gene
 from dallinger.config import get_config
 config = get_config()
 import json
