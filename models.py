@@ -193,7 +193,7 @@ class MotionAgent(Agent):
 
         hausdorff = 0
         for x, y, t in zip(true_xs, true_ys, true_ts):
-            closest = round(min([pow(pow(x-tx, 2) + pow(y-ty, 2) + pow((t-tt)/config.get("ms_per_px"), 2), 0.5) for tx, ty, tt in zip(xs, ys, ts)]))
+            closest = int(round(min([pow(pow(x-tx, 2) + pow(y-ty, 2) + pow((t-tt)/config.get("ms_per_px"), 2), 0.5) for tx, ty, tt in zip(xs, ys, ts)])))
             if closest > hausdorff:
                 hausdorff = closest
 
