@@ -57,7 +57,8 @@ save_input = function() {
 
     reqwest({
         url: "/hausdorff",
-        method: 'get',
+        method: 'post',
+        type: 'json',
         data: {
             input: input,
         },
@@ -77,7 +78,8 @@ save_input = function() {
             enable_buttons();
         },
         error: function (err) {
-            create_agent();
+            $(".feedback").html("Something went wrong with the attempt to calculate your score. You can try to submit again, or jsut clock Next to continue.");
+            $("#next-button").prop("disabled",false);
         }
     });
 };

@@ -151,7 +151,7 @@ def current_points(participant_id):
     return Response(json.dumps(data), status=200, mimetype='application/json')
 
 
-@extra_routes.route("/hausdorff", methods=["GET"])
+@extra_routes.route("/hausdorff", methods=["POST"])
 def get_hausdorff():
     from flask import request
     data = request.values["input"]
