@@ -33,7 +33,6 @@ $(document).ready(function() {
         type: 'json',
         success: function (resp) {
             bonus_denominator = resp.bonus_denominator;
-            $(".trials").html(trials);
         },
         error: function (err) {
             create_agent();
@@ -46,28 +45,39 @@ $(document).ready(function() {
 });
 
 save_input = function() {
-    hausdorff = 0;
-    for (i=0; i<true_xs.length; i++) {
-        ds = [];
-        for (ii=0; ii<xs.length; ii++) {
-            ds.push(Math.pow(Math.pow(true_xs[i] - xs[ii], 2) + Math.pow(true_ys[i] - ys[ii], 2) + Math.pow((true_ts[i] - ts[ii])/ms_per_px, 2), 0.5));
-        }
-        min_d = Math.round(Math.min.apply(null, ds));
-        if (min_d > hausdorff) {
-            hausdorff = min_d;
-        }
-    }
+    input = {
+        xs: xs,
+        ys: ys,
+        ts: ts,
+        true_xs: true_xs,
+        true_ys: true_ys,
+        true_ts: true_ts
+    };
+    input = JSON.stringify(input);
 
-    error = hausdorff;
-    points = Math.max(0, 100-Math.round(hausdorff/4));
+    reqwest({
+        url: "/hausdorff",
+        method: 'get',
+        data: {
+            input: input,
+        },
+        success: function (resp) {
+            hausdorff = resp.hausdorff;
+            error = hausdorff;
+            points = Math.max(0, 100-Math.round(hausdorff/4));
 
-    bonus = Math.max(Math.min(((points)/bonus_denominator)*2.50, 2.50), 0.00).toFixed(2);
-    $(".bonus").html("At this level of performance your bonus would be $" + bonus + ".");
-    if (points < 70) {
-        $(".feedback").html("You scored " + points + "/100. Please try again.");
-    } else {
-        $(".feedback").html("You scored " + points + "/100. Use the Next button to continue or keep practicing.");
-        $("#next-button").prop("disabled",false);
-    }
-    enable_buttons();
+            bonus = Math.max(Math.min(((points)/bonus_denominator)*2.50, 2.50), 0.00).toFixed(2);
+            $(".bonus").html("At this level of performance your bonus would be $" + bonus + ".");
+            if (points < 70) {
+                $(".feedback").html("You scored " + points + "/100. Please try again.");
+            } else {
+                $(".feedback").html("You scored " + points + "/100. Use the Next button to continue or keep practicing.");
+                $("#next-button").prop("disabled",false);
+            }
+            enable_buttons();
+        },
+        error: function (err) {
+            create_agent();
+        }
+    });
 };
