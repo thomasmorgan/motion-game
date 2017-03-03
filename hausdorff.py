@@ -20,18 +20,25 @@ def hausdorff(xs, ys, ts, true_xs, true_ys, true_ts):
         true_xs_2.append(true_xs[index])
         true_ys_2.append(true_ys[index])
 
-    # calculate the velocity of the dot at these intervals
-    ts_3 = ts_2[1:]
-    xs_3 = [int((xs_2[i+1] - xs_2[i])*(1000.0/float(config.get("hausdorff_interval")))) for i in range(len(xs_2)-1)]
-    ys_3 = [int((ys_2[i+1] - ys_2[i])*(1000.0/float(config.get("hausdorff_interval")))) for i in range(len(ys_2)-1)]
-    true_xs_3 = [int((true_xs_2[i+1] - true_xs_2[i])*(1000.0/float(config.get("hausdorff_interval")))) for i in range(len(true_xs_2)-1)]
-    true_ys_3 = [int((true_ys_2[i+1] - true_ys_2[i])*(1000.0/float(config.get("hausdorff_interval")))) for i in range(len(true_ys_2)-1)]
-
-    # calculate the hausdorff distance
+    # calculate the *average* hausdorff distance
     hausdorff = 0
-    for x, y, t in zip(xs_3, ys_3, ts_3):
-        closest = int(round(min([pow(pow(x-tx, 2) + pow(y-ty, 2) + pow((t-tt)/config.get("ms_per_px"), 2), 0.5) for tx, ty, tt in zip(true_xs_3, true_ys_3, ts_3)])))
+    for x, y, t in zip(xs_2, ys_2, ts_2):
+        closest = int(round(min([pow(pow(x-tx, 2) + pow(y-ty, 2) + pow((t-tt)/config.get("ms_per_px"), 2), 0.5) for tx, ty, tt in zip(true_xs_2, true_ys_2, ts_2)])))
         hausdorff += closest
-    hausdorff = int(round(float(hausdorff)/(float(len(xs_3)))))
+    hausdorff = int(round(float(hausdorff)/(float(len(xs_2)))))
+
+    # work out length of user input and true length
+    length = 0
+    for i in range(len(xs)-1):
+        length += pow(pow(xs[i+1]-xs[i], 2) + pow(ys[i+1]-ys[i], 2), 0.5)
+    true_length = 0
+    for i in range(len(true_xs)-1):
+        true_length += pow(pow(true_xs[i+1]-true_xs[i], 2) + pow(true_ys[i+1]-true_ys[i], 2), 0.5)
+
+    # increase error if lengths are divergent
+    hausdorff = float(hausdorff)*(max([length, true_length])/float(min([length, true_length])))
+
+    # arbitrary scaling
+    hausdorff = int(round(hausdorff*4))
 
     return hausdorff
