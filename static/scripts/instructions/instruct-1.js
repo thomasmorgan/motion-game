@@ -64,7 +64,7 @@ save_input = function() {
         success: function (resp) {
             hausdorff = resp.hausdorff;
             error = hausdorff;
-            points = Math.max(0, 100-Math.round(hausdorff/4));
+            points = Math.max(0, 100-Math.round(hausdorff/5));
 
             bonus = Math.max(Math.min(((points)/bonus_denominator)*2.50, 2.50), 0.00).toFixed(2);
             $(".bonus").html("At this level of performance your bonus would be $" + bonus + ".");
