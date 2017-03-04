@@ -197,7 +197,7 @@ class MotionAgent(Agent):
 
         # save the results
         self.error = hd
-        self.points = int(round(max(0, 100-round(hd/5))))
+        self.points = max(100 - hd/10, 0)
         social = int(self.infos(type=SocialGene)[0].contents)
         self.fitness = pow(max(self.points - social*config.get("social_cost"), 0), 2)
 
